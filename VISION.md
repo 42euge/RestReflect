@@ -76,7 +76,7 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 **Implementation:**
 
 - [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
-- [ ] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
+- [x] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
 - [ ] Always-listening mode: mic live by default, continuous chunked STT
 - [ ] Compute monitor: orchestrates STT/LLM/TTS resources, schedules work by priority
 - [ ] Streaming transcript pipeline:
