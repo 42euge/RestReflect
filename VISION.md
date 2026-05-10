@@ -136,9 +136,9 @@ A good reflection has shape: arrival, exploration, and a gentle landing. Right n
 phq-9000 tracks depression scores over time. MindReflect should be aware of that context without violating the "not a therapist" boundary.
 
 - [ ] Local API between phq-9000 (iOS) and MindReflect (macOS) via Bonjour/mDNS
-- [ ] Persona receives latest PHQ-9 score as soft context ("recent self-assessment suggests moderate symptoms")
-- [ ] Score trends inform gentle nudges ("You mentioned things have been harder lately — is that still true?")
-- [ ] Never display scores in the MindReflect UI — that's phq-9000's job
+- [x] Persona receives latest PHQ-9 score as soft context ("recent self-assessment suggests moderate symptoms")
+- [x] Score trends inform gentle nudges ("You mentioned things have been harder lately — is that still true?")
+- [x] Never display scores in the MindReflect UI — that's phq-9000's job
 - [x] Referral-to-human guardrail if scores consistently indicate severe range
 
 ### M5 — Fine-tuned Reflect model
