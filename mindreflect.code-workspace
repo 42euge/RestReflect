@@ -1,0 +1,10 @@
+{
+  "folders": [
+    { "name": "MindReflect", "path": "." },
+    { "name": "mind-render", "path": "../mind-render" },
+    { "name": "deep-reflect", "path": "../deep-reflect" },
+    { "name": "geno-voice", "path": "../geno-voice" },
+    { "name": "phq-9000", "path": "../phq-9000" }
+  ],
+  "settings": {}
+}
