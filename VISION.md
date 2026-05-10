@@ -115,10 +115,10 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 
 The particle engine can render shapes from LLM output, but the persona doesn't use it yet. The canvas should reflect the conversation's emotional texture — not literal illustrations, but abstract resonance.
 
-- [ ] deep-reflect persona emits render blocks based on emotional context
-- [ ] Calm → slow-drifting constellations; tension → tight spirals; release → expanding scatter
+- [x] deep-reflect persona emits render blocks based on emotional context
+- [x] Calm → slow-drifting constellations; tension → tight spirals; release → expanding scatter
 - [ ] Canvas responds to voice tone/cadence (amplitude, pace) not just words
-- [ ] Transitions between emotional states are smooth, never jarring
+- [x] Transitions between emotional states are smooth, never jarring
 - [x] User can toggle canvas off entirely (already possible via toolbar)
 
 ### M3 — Session structure
