@@ -109,7 +109,7 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 - [ ] Sentence-level streaming TTS for spoken responses
 - [x] Text input as fallback (type if you don't want to speak)
 - [x] Visual feedback: ambient indicator for listening state, processing state
-- [ ] Graceful handling of background noise, false starts
+- [x] Graceful handling of background noise, false starts
 
 ### M2 — Canvas as emotional mirror
 
