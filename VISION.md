@@ -20,19 +20,35 @@ The wrapper works. Three lines of code connect mind-render (the engine) to deep-
 
 ## Where we're going
 
-### M1 — Full voice loop
+### M1 — Listening-first voice loop
 
-The mic and speaker controls exist but the experience isn't seamless yet. The goal: open the app, start talking, and hear a thoughtful reply — like speaking to a companion in the room. Always listening, natural turn-taking, no buttons.
+The core interaction is not a conversation — it's a listening session. The user opens the app and starts talking. The system listens for as long as the user needs. It doesn't interrupt or wait for a gap between sentences to jump in. It behaves like a good listener: present, nodding along, giving space.
+
+**The model:**
+
+1. **Always listening.** Mic is live from app launch. Continuous STT streams transcription into a growing buffer.
+2. **Active listening cues.** While the user speaks, the system plays pre-computed affirmations at natural pause points — "mhmm," "okay," "I see," "go on." These are canned audio, not LLM-generated. They signal presence without interrupting flow.
+3. **Short pause ≠ done.** A pause between sentences is normal. The system keeps listening and may offer a soft prompt ("how was that for you?") if the silence lingers but isn't long enough to be "done."
+4. **Long pause = real response.** When the user is truly done (extended silence, maybe 5-10 seconds), the system sends the full accumulated transcript to Gemma and generates a real, thoughtful response. Then speaks it. Then returns to listening.
+5. **The loop repeats.** After the companion responds, it goes back to step 1. The user can keep going or stay quiet.
+
+**Implementation:**
 
 - [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
 - [ ] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
-- [ ] Always-listening mode: mic is live by default, VAD detects speech start/end
-- [ ] Natural turn-taking via silence detection (VAD already exists in geno-voice) — silence = your turn is done
-- [ ] Companion waits for a real pause before responding, not a gap between words
-- [ ] Companion speaks its reply, then returns to listening — no button presses in the loop
+- [ ] Always-listening mode: mic is live by default, continuous STT transcription
+- [ ] Transcript buffer: accumulates everything the user says across short pauses
+- [ ] Two-tier silence detection:
+  - Short pause (1-3s): eligible for active listening cue ("mhmm", "okay")
+  - Long pause (5-10s, configurable): triggers real LLM response
+- [ ] Active listening cue bank: pre-recorded or pre-synthesized short affirmations
+  - Varies cues to avoid repetition ("mhmm", "I see", "okay", "go on", "right")
+  - Plays at natural sentence boundaries, not mid-thought
+  - Optional soft prompts for medium pauses ("how was that for you?", "tell me more")
+- [ ] LLM turn: full transcript buffer → Gemma → streamed TTS response → back to listening
+- [ ] Sentence-level streaming TTS so the real response starts playing before it's fully generated
 - [ ] Text input remains available as a fallback (type if you don't want to speak)
-- [ ] Visual feedback: subtle ambient indicator when mic is live, distinct state when processing
-- [ ] Sentence-level streaming TTS so the reply starts playing before the full response is generated
+- [ ] Visual feedback: subtle ambient indicator when listening, distinct state when thinking/responding
 - [ ] Graceful handling of background noise, false starts, and "never mind"
 
 ### M2 — Canvas as emotional mirror
@@ -85,4 +101,4 @@ gemma4:e4b is general-purpose. A fine-tuned model would internalize the CBT/MI a
 
 **Canvas is ambient, not illustrative.** The visuals are abstract and felt, not literal. They should feel like looking at moving water while thinking — present but not demanding attention.
 
-**Voice is natural, not robotic.** Always listening, natural turn-taking, comfortable silences. No buttons to hold, no "press to talk." If the voice loop feels like a phone tree or a walkie-talkie, it's wrong. It should feel like someone is in the room with you.
+**Listening first, responding second.** The system's primary job is to listen, not to talk. It holds space while the user processes out loud. Pre-computed "mhmm" and "I see" cues signal presence without demanding attention. The LLM only speaks when the user is truly done — after a long, real silence. No buttons, no interruptions. It should feel like someone is in the room with you, sitting quietly, paying attention.
