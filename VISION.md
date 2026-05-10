@@ -139,7 +139,7 @@ phq-9000 tracks depression scores over time. MindReflect should be aware of that
 - [ ] Persona receives latest PHQ-9 score as soft context ("recent self-assessment suggests moderate symptoms")
 - [ ] Score trends inform gentle nudges ("You mentioned things have been harder lately — is that still true?")
 - [ ] Never display scores in the MindReflect UI — that's phq-9000's job
-- [ ] Referral-to-human guardrail if scores consistently indicate severe range
+- [x] Referral-to-human guardrail if scores consistently indicate severe range
 
 ### M5 — Fine-tuned Reflect model
 
