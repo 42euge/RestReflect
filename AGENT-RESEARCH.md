@@ -100,10 +100,11 @@ Whisper transcribes audio but it's designed for batch processing. We need contin
 
 ---
 
-## R4 — Compute monitor / resource orchestration
+## R4 — Compute monitor / resource orchestration [done]
 
 **Supports:** M1 (compute monitor)
 **Slug:** `compute-monitor`
+**Deliverable:** [docs/research/compute-monitor/README.md](docs/research/compute-monitor/README.md)
 
 Three resources (STT, LLM, TTS) need to run in parallel with intelligent scheduling. When one is idle, another should be working.
 
