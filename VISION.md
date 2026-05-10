@@ -125,7 +125,7 @@ The particle engine can render shapes from LLM output, but the persona doesn't u
 
 A good reflection has shape: arrival, exploration, and a gentle landing. Right now, conversations just start and end.
 
-- [ ] Opening ritual: a brief grounding prompt ("What's on your mind?" or silence)
+- [x] Opening ritual: a brief grounding prompt ("What's on your mind?" or silence)
 - [ ] Closing ritual: summarize themes, offer a takeaway thought, gentle ending
 - [ ] Session timer (optional, non-intrusive) to prevent doom-spiraling
 - [ ] Session export: save conversation as local markdown with timestamp
