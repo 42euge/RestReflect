@@ -177,10 +177,11 @@ The canvas should respond to emotional texture, and the turn-taking engine needs
 
 ---
 
-## R7 — LLM-wiki pattern for live session notes
+## R7 — LLM-wiki pattern for live session notes [done]
 
 **Supports:** M1 (background LLM tool use)
 **Slug:** `session-wiki`
+**Deliverable:** [docs/research/session-wiki/README.md](docs/research/session-wiki/README.md)
 
 The LLM should be building structured notes while the user speaks — verbatim transcript, cleaned version, running summary, wiki entries. How to do this incrementally from chunked input?
 
