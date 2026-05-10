@@ -129,7 +129,7 @@ A good reflection has shape: arrival, exploration, and a gentle landing. Right n
 - [x] Closing ritual: summarize themes, offer a takeaway thought, gentle ending
 - [x] Session timer (optional, non-intrusive) to prevent doom-spiraling
 - [x] Session export: save conversation as local markdown with timestamp
-- [ ] No cross-session memory by default (privacy) — but opt-in "journal" mode that saves themes
+- [x] No cross-session memory by default (privacy) — but opt-in "journal" mode that saves themes
 
 ### M4 — PHQ-9 integration
 
