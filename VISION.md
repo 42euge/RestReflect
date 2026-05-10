@@ -79,35 +79,35 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 - [x] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
 - [ ] Always-listening mode: mic live by default, continuous chunked STT
 - [ ] Compute monitor: orchestrates STT/LLM/TTS resources, schedules work by priority
-- [ ] Streaming transcript pipeline:
+- [x] Streaming transcript pipeline:
   - STT chunk → append to running transcript
   - Each chunk triggers background LLM processing
   - LLM outputs: verbatim log, cleaned transcript, running summary, wiki entries
-- [ ] Background LLM tool use while user speaks:
+- [x] Background LLM tool use while user speaks:
   - `write_verbatim` — raw transcript as spoken
   - `write_clean` — structured, readable version
   - `summarize` — running themes, updated with each chunk
   - `wiki_update` — llm-wiki entries from emerging topics
   - `assess_moment` — should the system speak now? (usually: no)
-- [ ] Turn-taking signal sources (all feed into the engine):
+- [x] Turn-taking signal sources (all feed into the engine):
   - **NLP triggers** (fast, no LLM): "what do you think?", "yeah idk", "it's just hard"
   - **LLM background assessment**: `assess_moment` tool output from live processing
   - **Silence duration**: short pause vs. long pause vs. extended silence
   - **Emotional trajectory**: intensity shifts detected from transcript and audio amplitude
   - **Conversation state**: how long since system last spoke, how much user has said
   - Any signal can trigger a response — NLP is the fastest, LLM assessment is the richest
-- [ ] Dynamic active listening cues:
+- [x] Dynamic active listening cues:
   - LLM selects contextually appropriate cue (not random)
   - TTS pre-synthesizes cues during idle cycles
   - Played at natural sentence boundaries
-- [ ] Turn-taking engine: decides when and how the system should respond
+- [x] Turn-taking engine: decides when and how the system should respond
   - Inputs: NLP triggers, silence duration, emotional trajectory, conversation state
   - Outputs: action type (stay silent, play cue, speak briefly, speak at length)
   - Default bias toward silence — this is the user's space
   - But has the full range: a brief "tell me more" or a substantive multi-sentence reflection
   - LLM already has full context from background processing, so responses are fast when called
 - [ ] Sentence-level streaming TTS for spoken responses
-- [ ] Text input as fallback (type if you don't want to speak)
+- [x] Text input as fallback (type if you don't want to speak)
 - [ ] Visual feedback: ambient indicator for listening state, processing state
 - [ ] Graceful handling of background noise, false starts
 
