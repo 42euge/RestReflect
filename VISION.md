@@ -20,36 +20,96 @@ The wrapper works. Three lines of code connect mind-render (the engine) to deep-
 
 ## Where we're going
 
-### M1 — Listening-first voice loop
+### M1 — Streaming listen-and-process pipeline
 
-The core interaction is not a conversation — it's a listening session. The user opens the app and starts talking. The system listens for as long as the user needs. It doesn't interrupt or wait for a gap between sentences to jump in. It behaves like a good listener: present, nodding along, giving space.
+This is a space for the user to speak. The system's job is to listen, process continuously, and respond only when it has something worth saying — briefly. It does not wait for the user to finish before working. It does not give long-winded answers. Everything streams, everything chunks, compute is always busy.
 
 **The model:**
 
-1. **Always listening.** Mic is live from app launch. Continuous STT streams transcription into a growing buffer.
-2. **Active listening cues.** While the user speaks, the system plays pre-computed affirmations at natural pause points — "mhmm," "okay," "I see," "go on." These are canned audio, not LLM-generated. They signal presence without interrupting flow.
-3. **Short pause ≠ done.** A pause between sentences is normal. The system keeps listening and may offer a soft prompt ("how was that for you?") if the silence lingers but isn't long enough to be "done."
-4. **Long pause = real response.** When the user is truly done (extended silence, maybe 5-10 seconds), the system sends the full accumulated transcript to Gemma and generates a real, thoughtful response. Then speaks it. Then returns to listening.
-5. **The loop repeats.** After the companion responds, it goes back to step 1. The user can keep going or stay quiet.
+The system is three resources running in parallel — STT, LLM, TTS — orchestrated by a compute monitor that maximizes utilization at all times.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Compute Monitor                        │
+│       Orchestrates all resources, maximizes utilization   │
+└────┬──────────────┬──────────────┬──────────────────────┘
+     │              │              │
+┌────▼────┐   ┌─────▼──────┐  ┌───▼─────┐
+│   STT   │   │    LLM     │  │   TTS   │
+│ Whisper  │   │   Gemma    │  │ Kokoro  │
+│          │   │            │  │         │
+│ Chunked  │   │ Background │  │ Pre-gen │
+│ transcr. │──▶│ processing │─▶│ cues +  │
+│          │   │ + tool use │  │ replies │
+└────┬─────┘   └─────▲──────┘  └─────────┘
+     │               │
+┌────▼───────────────┴───────────────────┐
+│          Turn-Taking Engine             │
+│                                         │
+│ NLP triggers ("what do you think?")     │
+│ Silence duration (short / long)         │
+│ Emotional trajectory (from LLM bg)      │
+│ Conversation state                      │
+│                                         │
+│ → stay silent | play cue | speak        │
+└─────────────────────────────────────────┘
+```
+
+1. **STT streams continuously.** Mic is live. Whisper transcribes in chunks as the user speaks — not waiting for silence, not batching. Each chunk feeds immediately into the pipeline.
+
+2. **LLM processes live, in the background.** As STT chunks arrive, the LLM is already working — not to generate a spoken response, but to:
+   - Write down verbatim what the user said
+   - Clean up and structure the transcript
+   - Summarize emerging themes
+   - Build wiki entries (llm-wiki pattern)
+   - Track emotional texture for canvas
+   - Identify if/when a brief spoken response would actually help
+
+3. **Multiple signals feed the turn-taking engine.** The system doesn't rely on any single heuristic to decide when to respond. NLP pattern matching is one fast signal (detects "what do you think?", trailing "yeah idk, it's just hard"). But the LLM's own background assessment is another — it's been processing the transcript live and may recognize a moment that calls for a response without any explicit invitation. Silence duration is another. Emotional trajectory is another. The turn-taking engine weighs all of these.
+
+4. **Spoken responses match the moment.** The system mostly listens. When it does speak, the length matches what's needed — usually brief (a reflection, a question), but sometimes long when the user has opened a door that calls for a real, substantive response. The default is silence, not verbosity. But the system has the full range.
+
+5. **Active listening cues are dynamic.** "Mhmm," "I see," "go on" — but contextually chosen by the LLM (not random), pre-synthesized by TTS during idle cycles, and played at natural boundaries. The system sounds present, not mechanical.
+
+5. **Compute monitor keeps everything busy.** When STT is idle (silence), the LLM uses that time for deeper processing (summarize, wiki). When the LLM is idle, TTS pre-synthesizes the next likely cue. No resource sits waiting.
 
 **Implementation:**
 
 - [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
 - [ ] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
-- [ ] Always-listening mode: mic is live by default, continuous STT transcription
-- [ ] Transcript buffer: accumulates everything the user says across short pauses
-- [ ] Two-tier silence detection:
-  - Short pause (1-3s): eligible for active listening cue ("mhmm", "okay")
-  - Long pause (5-10s, configurable): triggers real LLM response
-- [ ] Active listening cue bank: pre-recorded or pre-synthesized short affirmations
-  - Varies cues to avoid repetition ("mhmm", "I see", "okay", "go on", "right")
-  - Plays at natural sentence boundaries, not mid-thought
-  - Optional soft prompts for medium pauses ("how was that for you?", "tell me more")
-- [ ] LLM turn: full transcript buffer → Gemma → streamed TTS response → back to listening
-- [ ] Sentence-level streaming TTS so the real response starts playing before it's fully generated
-- [ ] Text input remains available as a fallback (type if you don't want to speak)
-- [ ] Visual feedback: subtle ambient indicator when listening, distinct state when thinking/responding
-- [ ] Graceful handling of background noise, false starts, and "never mind"
+- [ ] Always-listening mode: mic live by default, continuous chunked STT
+- [ ] Compute monitor: orchestrates STT/LLM/TTS resources, schedules work by priority
+- [ ] Streaming transcript pipeline:
+  - STT chunk → append to running transcript
+  - Each chunk triggers background LLM processing
+  - LLM outputs: verbatim log, cleaned transcript, running summary, wiki entries
+- [ ] Background LLM tool use while user speaks:
+  - `write_verbatim` — raw transcript as spoken
+  - `write_clean` — structured, readable version
+  - `summarize` — running themes, updated with each chunk
+  - `wiki_update` — llm-wiki entries from emerging topics
+  - `assess_moment` — should the system speak now? (usually: no)
+- [ ] Turn-taking signal sources (all feed into the engine):
+  - **NLP triggers** (fast, no LLM): "what do you think?", "yeah idk", "it's just hard"
+  - **LLM background assessment**: `assess_moment` tool output from live processing
+  - **Silence duration**: short pause vs. long pause vs. extended silence
+  - **Emotional trajectory**: intensity shifts detected from transcript and audio amplitude
+  - **Conversation state**: how long since system last spoke, how much user has said
+  - Any signal can trigger a response — NLP is the fastest, LLM assessment is the richest
+- [ ] Dynamic active listening cues:
+  - LLM selects contextually appropriate cue (not random)
+  - TTS pre-synthesizes cues during idle cycles
+  - Played at natural sentence boundaries
+- [ ] Turn-taking engine: decides when and how the system should respond
+  - Inputs: NLP triggers, silence duration, emotional trajectory, conversation state
+  - Outputs: action type (stay silent, play cue, speak briefly, speak at length)
+  - Default bias toward silence — this is the user's space
+  - But has the full range: a brief "tell me more" or a substantive multi-sentence reflection
+  - LLM already has full context from background processing, so responses are fast when called
+- [ ] Sentence-level streaming TTS for spoken responses
+- [ ] Text input as fallback (type if you don't want to speak)
+- [ ] Visual feedback: ambient indicator for listening state, processing state
+- [ ] Graceful handling of background noise, false starts
 
 ### M2 — Canvas as emotional mirror
 
