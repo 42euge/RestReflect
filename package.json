@@ -11,9 +11,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mind-render": "github:42euge/mind-render",
     "deep-reflect": "github:42euge/deep-reflect",
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "mind-render": "github:42euge/mind-render"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.1.1",
