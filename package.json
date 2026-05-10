@@ -1,0 +1,23 @@
+{
+  "name": "mind-reflect",
+  "productName": "MindReflect",
+  "version": "0.1.0",
+  "description": "A privacy-first reflection and mindfulness app powered by local AI.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "mind-render": "github:42euge/mind-render",
+    "deep-reflect": "github:42euge/deep-reflect",
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.1.1",
+    "@electron-forge/maker-zip": "^6.1.1",
+    "electron": "^24.1.1"
+  }
+}
