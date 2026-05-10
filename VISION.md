@@ -147,7 +147,7 @@ gemma4:e4b is general-purpose. A fine-tuned model would internalize the CBT/MI a
 
 - [ ] Curate training data: anonymized therapeutic dialog examples, MI transcripts
 - [ ] Fine-tune with Unsloth (already a dependency in deep-reflect)
-- [ ] Eval suite: does the model still respect clinical boundaries without the system prompt?
+- [x] Eval suite: does the model still respect clinical boundaries without the system prompt?
 - [ ] A/B testing: base model + system prompt vs. fine-tuned model
 - [ ] Reduce system prompt to safety-only once the model internalizes the approach
 
