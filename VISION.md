@@ -119,7 +119,7 @@ The particle engine can render shapes from LLM output, but the persona doesn't u
 - [ ] Calm → slow-drifting constellations; tension → tight spirals; release → expanding scatter
 - [ ] Canvas responds to voice tone/cadence (amplitude, pace) not just words
 - [ ] Transitions between emotional states are smooth, never jarring
-- [ ] User can toggle canvas off entirely (already possible via toolbar)
+- [x] User can toggle canvas off entirely (already possible via toolbar)
 
 ### M3 — Session structure
 
@@ -128,7 +128,7 @@ A good reflection has shape: arrival, exploration, and a gentle landing. Right n
 - [x] Opening ritual: a brief grounding prompt ("What's on your mind?" or silence)
 - [ ] Closing ritual: summarize themes, offer a takeaway thought, gentle ending
 - [ ] Session timer (optional, non-intrusive) to prevent doom-spiraling
-- [ ] Session export: save conversation as local markdown with timestamp
+- [x] Session export: save conversation as local markdown with timestamp
 - [ ] No cross-session memory by default (privacy) — but opt-in "journal" mode that saves themes
 
 ### M4 — PHQ-9 integration
