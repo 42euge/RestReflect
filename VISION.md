@@ -22,14 +22,18 @@ The wrapper works. Three lines of code connect mind-render (the engine) to deep-
 
 ### M1 — Full voice loop
 
-The mic and speaker controls exist but the end-to-end experience isn't seamless yet. The goal: hold the mic button, speak, release, hear a thoughtful reply — like talking to someone who actually listens.
+The mic and speaker controls exist but the experience isn't seamless yet. The goal: open the app, start talking, and hear a thoughtful reply — like speaking to a companion in the room. Always listening, natural turn-taking, no buttons.
 
 - [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
 - [ ] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
-- [ ] Push-to-talk → transcribe → LLM → synthesize → play, seamless round-trip
-- [ ] Silence detection for natural turn-taking (VAD already exists in geno-voice)
-- [ ] Visual feedback during recording and synthesis (mic pulse, waveform)
+- [ ] Always-listening mode: mic is live by default, VAD detects speech start/end
+- [ ] Natural turn-taking via silence detection (VAD already exists in geno-voice) — silence = your turn is done
+- [ ] Companion waits for a real pause before responding, not a gap between words
+- [ ] Companion speaks its reply, then returns to listening — no button presses in the loop
+- [ ] Text input remains available as a fallback (type if you don't want to speak)
+- [ ] Visual feedback: subtle ambient indicator when mic is live, distinct state when processing
 - [ ] Sentence-level streaming TTS so the reply starts playing before the full response is generated
+- [ ] Graceful handling of background noise, false starts, and "never mind"
 
 ### M2 — Canvas as emotional mirror
 
@@ -81,4 +85,4 @@ gemma4:e4b is general-purpose. A fine-tuned model would internalize the CBT/MI a
 
 **Canvas is ambient, not illustrative.** The visuals are abstract and felt, not literal. They should feel like looking at moving water while thinking — present but not demanding attention.
 
-**Voice is natural, not robotic.** Sentence-level streaming, natural turn-taking, comfortable silences. If the voice loop feels like a phone tree, it's wrong.
+**Voice is natural, not robotic.** Always listening, natural turn-taking, comfortable silences. No buttons to hold, no "press to talk." If the voice loop feels like a phone tree or a walkie-talkie, it's wrong. It should feel like someone is in the room with you.
