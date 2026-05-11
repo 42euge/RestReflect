@@ -16,8 +16,9 @@ if (!process.env.MIND_RENDER_VOICE_COMMAND && fs.existsSync(voiceServer)) {
 }
 
 // Start the voice sidecar (Python captures mic, broadcasts via WebSocket)
+// Skip if MINDREFLECT_NO_SIDECAR is set (for manual sidecar testing)
 const sidecar = path.join(voiceRoot, "pipecat_server.py");
-if (fs.existsSync(sidecar)) {
+if (fs.existsSync(sidecar) && !process.env.MINDREFLECT_NO_SIDECAR) {
   const venvPython = path.join(voiceRoot, ".venv", "bin", "python");
   const python = fs.existsSync(venvPython) ? venvPython : "python3";
   const child = spawn(python, [sidecar], {
