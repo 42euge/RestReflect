@@ -77,7 +77,7 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 
 - [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
 - [x] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
-- [ ] Always-listening mode: mic live by default, continuous chunked STT
+- [x] Always-listening mode: mic live by default, continuous chunked STT
 - [x] Compute monitor: orchestrates STT/LLM/TTS resources, schedules work by priority
 - [x] Streaming transcript pipeline:
   - STT chunk → append to running transcript
@@ -106,7 +106,7 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
   - Default bias toward silence — this is the user's space
   - But has the full range: a brief "tell me more" or a substantive multi-sentence reflection
   - LLM already has full context from background processing, so responses are fast when called
-- [ ] Sentence-level streaming TTS for spoken responses
+- [x] Sentence-level streaming TTS for spoken responses
 - [x] Text input as fallback (type if you don't want to speak)
 - [x] Visual feedback: ambient indicator for listening state, processing state
 - [x] Graceful handling of background noise, false starts
