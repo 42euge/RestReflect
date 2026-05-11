@@ -1,6 +1,6 @@
 # MindReflect Loop
 
-Ship working features into the actual app. Each iteration: pick the highest-impact change to the user-facing product, implement it across whichever repos need it, launch the app, and verify it works in the GUI.
+Ship working features into the actual app. Each iteration: launch the app, find what's broken or missing, fix it, verify with loopback test.
 
 Invoke with: `/loop 25min LOOP.md`
 
@@ -8,61 +8,83 @@ Invoke with: `/loop 25min LOOP.md`
 
 ## Rules
 
-1. **The app is the product.** A module that isn't wired into the Electron app doesn't count. Don't check off VISION.md items based on component tests or simulations — only check them off when the user can see or use them in the running app.
+1. **The app is the product.** If you can't see it in the running Electron window, it doesn't exist. Don't check off items based on tests or simulations.
 
-2. **Launch and verify every iteration.** Every iteration that changes code must end with `npm start` from MindReflect, a screenshot, and visual confirmation. If you can't launch, fix that first.
+2. **Test with loopback every iteration.** After any code change:
+   ```bash
+   cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+   .venv/bin/python examples/loopback_test.py "test phrase here"
+   ```
+   Then screenshot and verify visually.
 
-3. **No research unless the code is blocked.** Don't escape into research when you should be writing integration code. Research is for when you genuinely don't know how to proceed, not when the work is hard.
+3. **Fix what's broken before building new things.** Hallucinations, feedback loops, wrong persona — fix first.
 
-4. **Fix what's broken before building new things.** If the app has errors (like STT 500s), fix those before adding features.
+4. **Don't stop the loop.** Only stop when the user tells you to stop. Not when you think you're done.
 
-5. **Work across repos.** Most features touch multiple repos. Change mind-render, deep-reflect, geno-voice, and MindReflect in the same iteration if needed. Commit and push each one.
+5. **Be honest about what works and what doesn't.** If a module exists but isn't wired into the app, say that. Don't call it complete.
 
 ## Iteration
 
-### 1. Launch the app
+### 1. Launch and check
 
 ```bash
 cd /Users/euge/code-red/mind-reflect-ws/MindReflect
 pkill -9 -f 'Electron' 2>/dev/null; sleep 1
 npm start 2>&1 &
-# Wait for window
 ```
 
-If it doesn't launch or has errors, fix those first. That IS the iteration.
+### 2. Loopback test
 
-### 2. Identify the biggest gap
-
-Look at the running app. What's the most important thing that's missing or broken? Not what VISION.md says — what you can see with your eyes. Common gaps:
-
-- Something is erroring (fix it)
-- A feature exists in backend modules but isn't wired into the UI (wire it)
-- The interaction model is wrong (change it)
-
-### 3. Implement
-
-Change the code. This usually means editing files in multiple repos:
-
-- `mind-render/src/client.js` — renderer UI logic
-- `mind-render/src/api.js` — IPC handlers
-- `mind-render/src/index.js` — main process
-- `mind-render/src/preload.js` — IPC bridge
-- `mind-render/src/index.html` — HTML structure
-- `mind-render/src/index.css` — styles
-- `deep-reflect/runtime/` — persona, guardrails
-- `geno-voice/server.py` — voice server endpoints
-- `geno-voice/session/` — session modules
-- `MindReflect/src/main.js` — wrapper config
-
-After changing a dependency repo (mind-render, deep-reflect), update MindReflect:
 ```bash
-npm install github:42euge/<repo>
+cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+.venv/bin/python examples/loopback_test.py
 ```
 
-### 4. Verify in the app
+### 3. Screenshot and evaluate
 
-Relaunch, screenshot, confirm the change works visually. If it doesn't, fix it in the same iteration. Don't commit broken code.
+```bash
+screencapture -x /tmp/mr-test.png
+```
 
-### 5. Commit and report
+What to check:
+- Did the speech get transcribed correctly? (not hallucinated)
+- Did the Reflect persona respond? (not generic)
+- Was the response spoken back? (TTS working)
+- No feedback loop? (app didn't transcribe its own output)
+- Canvas rendered? (particles visible)
 
-Commit across all modified repos. Push. One sentence on what changed in the app.
+### 4. Fix what's wrong
+
+Change code across repos as needed. After changing mind-render or deep-reflect:
+```bash
+cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+rm -rf node_modules/mind-render package-lock.json && npm install
+```
+
+### 5. Commit and continue
+
+Commit each repo. Push. Don't stop — go to step 1.
+
+## What's actually working in the app
+
+- Always-listening mic (ContinuousListener, browser-side VAD)
+- Whisper transcription via geno-voice
+- Reflect persona (CBT/MI) via Ollama
+- TTS response via Kokoro (am_michael male voice)
+- Canvas emotional render blocks
+- Markdown rendering in chat
+- Crisis detection guardrails
+- Session export (Cmd+S)
+- Opening message ("What's on your mind?")
+
+## What's built but NOT in the app
+
+- Turn-taking engine (geno-voice/session/turn_taking.py)
+- Session notes / background processing (geno-voice/session/notes.py)
+- Backchannel cue playback (geno-voice/session/cues/)
+- Activation tracker (geno-voice/session/activation.py)
+- Session timer (geno-voice/session/timer.py)
+- NLP triggers (geno-voice/session/triggers.py)
+- Compute monitor (geno-voice/session/compute.py)
+
+These need to be wired into the Electron app to actually work.

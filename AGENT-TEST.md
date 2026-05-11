@@ -1,145 +1,81 @@
 # MindReflect — Agent Test Playbook
 
-Verify features against [VISION.md](VISION.md) using GUI-driven testing. Screenshot the app, interact via AppleScript, and confirm things work visually — not just that code compiles.
+Test the running app. Not unit tests — the actual Electron app with real audio, real LLM responses, real user experience.
 
-See also: [AGENT-DEV.md](AGENT-DEV.md) (build), [AGENT-RESEARCH.md](AGENT-RESEARCH.md) (investigate), [LOOP.md](LOOP.md) (autonomous mode selection).
+## Loopback testing
 
----
-
-## How to use this file
-
-1. **Read VISION.md** — identify what to test (recently checked items, or items that should be checked).
-2. **Launch the app** from a clean state.
-3. **Interact and screenshot** — use AppleScript to drive the UI, `screencapture` to capture state, and read the PNGs to verify visually.
-4. **Fix issues** — if something doesn't work, fix it (switch to dev mode), then re-test.
-5. **Journal results** — use `/gt-notes` to record what passed, what failed, what was fixed.
-
----
-
-## Test toolkit
-
-### Process management
+The primary test method: play TTS audio through the speakers so the app's always-listening mic captures it. Uses a female voice (af_heart) so it's distinct from the app's male response voice (am_michael).
 
 ```bash
-# Kill leftover Electron processes (always do this before a clean test)
-pkill -9 -f 'MindReflect/node_modules/electron/dist/Electron.app' || true
+# Prerequisites: MindReflect running + voice server at :5111
+cd /Users/euge/code-red/mind-reflect-ws/geno-voice
 
-# Kill Ollama if needed
-pkill -f 'ollama serve' || true
+# Run with default phrases
+.venv/bin/python examples/loopback_test.py
 
-# Verify nothing is running
-ps aux | rg -i 'electron|ollama' | rg -v rg || echo "clean"
+# Run with custom phrase
+.venv/bin/python examples/loopback_test.py "I feel stuck and I don't know what to do"
 ```
 
-### Launch and wait
+What to verify after loopback:
+1. Transcribed text appears in the chat (not garbled/hallucinated)
+2. Reflect persona responds (not generic assistant)
+3. Response is spoken back in male voice (am_michael)
+4. No feedback loop (app doesn't transcribe its own TTS)
+5. Canvas renders particles on emotional responses
+6. App returns to "listening" after response finishes
+
+## Screenshot verification
 
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
-npm start &
-
-# Wait for window to appear
-until osascript -e 'tell application "System Events" to tell application process "Electron" to get title of window 1' 2>/dev/null | grep -qi 'MindReflect'; do sleep 2; done
-```
-
-### Screenshot
-
-```bash
-# Full screen capture
-screencapture -x /tmp/mindreflect-test.png
-
+screencapture -x /tmp/mr-test.png
 # Then read the PNG to inspect visually
 ```
 
-### Window inspection
+## Process management
 
 ```bash
-# Get window title
-osascript -e 'tell application "System Events" to tell application process "Electron" to get {name of every window, title of every window}'
+# Kill everything
+pkill -9 -f 'Electron' 2>/dev/null
+pkill -f 'ollama serve' 2>/dev/null
+pkill -f 'python.*server.py' 2>/dev/null
 
-# Get window size/position
-osascript -e 'tell application "System Events" to tell application process "Electron" to get {position of window 1, size of window 1}'
+# Start voice server
+cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+lsof -ti :5111 | xargs kill -9 2>/dev/null; sleep 1
+.venv/bin/python server.py 2>&1 &
+
+# Start app (from MindReflect dir!)
+cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+npm start 2>&1 &
 ```
 
-### UI interaction via AppleScript
+## Updating dependencies
+
+When you change mind-render or deep-reflect, you MUST rebuild MindReflect:
 
 ```bash
-# Activate the window
-osascript -e 'tell application "Electron" to activate'
-
-# Type text into the chat input
-osascript -e 'tell application "Electron" to activate' -e 'delay 0.2' -e 'tell application "System Events" to keystroke "Hello, how are you?"'
-
-# Press Enter to send
-osascript -e 'tell application "System Events" to key code 36'
-
-# Toggle DevTools
-osascript -e 'tell application "System Events" to keystroke "i" using {command down, option down}'
-
-# Close DevTools (same toggle)
-osascript -e 'tell application "System Events" to keystroke "i" using {command down, option down}'
-
-# Click a button by position (x, y from top-left of screen)
-osascript -e 'tell application "System Events" to click at {x, y}'
+cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+rm -rf node_modules/mind-render package-lock.json && npm install
 ```
 
-### Service health checks
+`npm install github:42euge/mind-render` often doesn't update git deps. Delete and reinstall.
+
+## Known issues to watch for
+
+- **Whisper hallucinations**: repetitive text like "they used to apply they used to apply" — the client-side filter should catch these
+- **Feedback loop**: app transcribes its own TTS output — the mute/unmute logic should prevent this
+- **Echo cancellation**: currently OFF (kills real speech). Feedback prevention is via muting during response + 2s unmute delay
+- **Persona not loading**: title shows "Mind Render" instead of "MindReflect · Reflect" — means npm install didn't pick up latest code
+
+## Unit tests (secondary)
 
 ```bash
-# Ollama running?
-curl -sS http://127.0.0.1:11434/api/tags 2>/dev/null | head -c 200 || echo "Ollama not running"
+# geno-voice session modules: 89 tests
+cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+.venv/bin/python -m pytest tests/ -v
 
-# geno-voice running?
-curl -sS http://127.0.0.1:5111/health 2>/dev/null || echo "geno-voice not running"
-
-# What model is loaded?
-curl -sS http://127.0.0.1:11434/api/tags 2>/dev/null | python3 -c "import sys,json; [print(m['name']) for m in json.load(sys.stdin).get('models',[])]" 2>/dev/null || true
-```
-
----
-
-## Test patterns
-
-### Smoke test (run after any change)
-
-1. Kill all processes, launch fresh
-2. Screenshot loading screen — verify it says "MindReflect" not "Mind Render"
-3. Wait for chat screen
-4. Screenshot — verify window title is "MindReflect · Reflect · gemma4:e4b"
-5. Type a message, press enter
-6. Wait 10s for response
-7. Screenshot — verify response appeared in chat
-8. Kill processes
-
-### Voice test (when geno-voice is running)
-
-1. Start geno-voice: `cd ../geno-voice && python3 server.py &`
-2. Wait for health: `until curl -sS http://127.0.0.1:5111/health 2>/dev/null; do sleep 1; done`
-3. Launch MindReflect
-4. Verify voice server status in settings view
-5. Test TTS by enabling speaker toggle and sending a message
-6. Kill processes
-
-### Regression test
-
-After any change, verify ALL of these still work:
-- [ ] App launches with correct branding
-- [ ] Persona loads (check terminal output for "persona loaded: reflect")
-- [ ] Ollama starts and loads model
-- [ ] Chat input works
-- [ ] LLM responds
-- [ ] Canvas toggle works
-- [ ] Settings view opens and closes
-- [ ] Voice server URL is configurable
-
----
-
-## Cleanup
-
-Always clean up after testing:
-
-```bash
-pkill -9 -f 'MindReflect/node_modules/electron/dist/Electron.app' || true
-pkill -f 'ollama serve' || true  # only if we started it
-pkill -f 'python3 server.py' || true  # only if we started geno-voice
-rm -f /tmp/mindreflect-test*.png
+# deep-reflect safety eval: 26 tests
+cd /Users/euge/code-red/mind-reflect-ws/deep-reflect
+python -m pytest tests/test_safety.py -v
 ```
