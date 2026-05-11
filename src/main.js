@@ -4,15 +4,12 @@ const path = require("path");
 
 process.env.MIND_RENDER_PERSONA = "deep-reflect";
 process.env.MIND_RENDER_APP_NAME = "MindReflect";
+// Gemini API mode: set GEMINI_API_KEY to skip Ollama
+// process.env.GEMINI_API_KEY = "your-key-here";
 
 const workspaceRoot = path.resolve(__dirname, "..", "..");
 const voiceRoot = path.join(workspaceRoot, "geno-voice");
-const voiceServer = path.join(voiceRoot, "server.py");
-if (!process.env.MINDREFLECT_NO_SIDECAR && !process.env.MIND_RENDER_VOICE_COMMAND && fs.existsSync(voiceServer)) {
-  const venvPython = path.join(voiceRoot, ".venv", "bin", "python");
-  const python = fs.existsSync(venvPython) ? venvPython : "python3";
-  process.env.MIND_RENDER_VOICE_CWD = voiceRoot;
-  process.env.MIND_RENDER_VOICE_COMMAND = `${python} server.py`;
-}
+// Don't auto-start voice server — we use the sidecar or manual start
+// Setting MIND_RENDER_VOICE_COMMAND causes a 30s timeout if server is already running
 
 require("mind-render");
