@@ -1,90 +1,112 @@
 # MindReflect Loop
 
-Ship working features into the actual app. Each iteration: launch the app, find what's broken or missing, fix it, verify with loopback test.
+Ship working features into the actual app. Test with real audio. Fix what's broken.
 
 Invoke with: `/loop 25min LOOP.md`
 
 ---
 
+## Architecture
+
+```
+MindReflect (npm start)
+  ├─ Pipecat sidecar (Python, auto-spawned)
+  │    ├─ PyAudio mic capture (system mic, no browser)
+  │    ├─ Silero VAD (speech detection)
+  │    ├─ MLX Whisper STT (transcription)
+  │    ├─ NLP triggers (detect invitations, resignation, etc.)
+  │    ├─ Turn-taking engine (decide: silent, cue, or speak)
+  │    ├─ Full session WAV recording
+  │    └─ WebSocket broadcast → Electron
+  ├─ Voice server (geno-voice, FastAPI)
+  │    ├─ Kokoro TTS (am_michael male voice)
+  │    ├─ Session notes (Ollama background tool use)
+  │    └─ /cue endpoint (backchannel WAVs)
+  └─ Electron app (mind-render)
+       ├─ WebSocket client ← sidecar
+       ├─ Chat UI + markdown rendering
+       ├─ Canvas particle engine
+       ├─ Reflect persona (deep-reflect)
+       └─ Ollama LLM (gemma4:e4b)
+```
+
 ## Rules
 
-1. **The app is the product.** If you can't see it in the running Electron window, it doesn't exist. Don't check off items based on tests or simulations.
+1. **The app is the product.** Test it by running it and speaking into the mic.
+2. **Test with real audio every iteration.** Either speak yourself or use the podcast test.
+3. **Fix what's broken before building new things.**
+4. **Don't stop the loop.** Only stop when the user says stop.
+5. **Be honest about what works and what doesn't.**
 
-2. **Test with loopback every iteration.** After any code change:
-   ```bash
-   cd /Users/euge/code-red/mind-reflect-ws/geno-voice
-   .venv/bin/python examples/loopback_test.py "test phrase here"
-   ```
-   Then screenshot and verify visually.
+## Testing
 
-3. **Fix what's broken before building new things.** Hallucinations, feedback loops, wrong persona — fix first.
+### Live test (best)
+```bash
+cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+npm start
+# Speak into the mic. The sidecar auto-starts.
+```
 
-4. **Don't stop the loop.** Only stop when the user tells you to stop. Not when you think you're done.
+### Podcast test (automated, no mic needed)
+```bash
+cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+.venv/bin/python examples/podcast_test.py --start 120 --duration 60
+```
 
-5. **Be honest about what works and what doesn't.** If a module exists but isn't wired into the app, say that. Don't call it complete.
+### Batch podcast (build training data)
+```bash
+.venv/bin/python examples/batch_podcast.py
+```
 
 ## Iteration
 
-### 1. Launch and check
-
+### 1. Launch
 ```bash
 cd /Users/euge/code-red/mind-reflect-ws/MindReflect
-pkill -9 -f 'Electron' 2>/dev/null; sleep 1
-npm start 2>&1 &
+pkill -9 -f 'Electron' 2>/dev/null
+pkill -f 'pipecat_server' 2>/dev/null
+npm start
 ```
 
-### 2. Loopback test
-
+### 2. Check sidecar is capturing
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/geno-voice
-.venv/bin/python examples/loopback_test.py
+ls -lh ~/.mindreflect/sessions/*/recordings/full-session.wav
 ```
+File should be growing. If not, sidecar didn't start.
 
-### 3. Screenshot and evaluate
-
-```bash
-screencapture -x /tmp/mr-test.png
-```
-
-What to check:
-- Did the speech get transcribed correctly? (not hallucinated)
-- Did the Reflect persona respond? (not generic)
-- Was the response spoken back? (TTS working)
-- No feedback loop? (app didn't transcribe its own output)
-- Canvas rendered? (particles visible)
+### 3. Test
+Speak into the mic, or run podcast test. Check:
+- Speech detected? (sidecar logs "VAD: speaking started")
+- Transcription accurate? (check sidecar stdout)
+- Trigger detected? (invitation, resignation, etc.)
+- Electron shows transcript? (WebSocket connected)
+- LLM responds on trigger? (only when invited)
+- Recording saved? (full-session.wav + chunk WAVs)
 
 ### 4. Fix what's wrong
-
-Change code across repos as needed. After changing mind-render or deep-reflect:
+Change code. After changing mind-render or deep-reflect:
 ```bash
 cd /Users/euge/code-red/mind-reflect-ws/MindReflect
-rm -rf node_modules/mind-render package-lock.json && npm install
+rm -rf node_modules package-lock.json && npm install
 ```
 
 ### 5. Commit and continue
 
-Commit each repo. Push. Don't stop — go to step 1.
+## What's in the app
 
-## What's actually working in the app
-
-- Always-listening mic (ContinuousListener, browser-side VAD)
-- Whisper transcription via geno-voice
+- Sidecar captures mic via PyAudio (no browser audio)
+- Silero VAD detects speech
+- MLX Whisper transcribes
+- NLP triggers gate LLM responses (listen-first)
+- Session WAV recording (continuous + per-chunk)
 - Reflect persona (CBT/MI) via Ollama
-- TTS response via Kokoro (am_michael male voice)
-- Canvas emotional render blocks
-- Markdown rendering in chat
-- Crisis detection guardrails
+- TTS responses (Kokoro, am_michael)
+- Canvas emotional particles
+- Crisis detection (988, Crisis Text Line)
+- Markdown rendering
 - Session export (Cmd+S)
-- Opening message ("What's on your mind?")
+- Session timer (20min check-in)
 
-## What's built but NOT in the app
+## Training data pipeline
 
-- Turn-taking engine (geno-voice/session/turn_taking.py)
-- Session notes / background processing (geno-voice/session/notes.py)
-- Backchannel cue playback (geno-voice/session/cues/)
-- Activation tracker (geno-voice/session/activation.py)
-- Session timer (geno-voice/session/timer.py)
-- NLP triggers (geno-voice/session/triggers.py)
-- Compute monitor (geno-voice/session/compute.py)
-
-These need to be wired into the Electron app to actually work.
+6 Esther Perel episodes processed → 5,152 training examples (AnnoMI + podcast + safety). Fine-tuning config ready at `deep-reflect/data/finetune.py`.
