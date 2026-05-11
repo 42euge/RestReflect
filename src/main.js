@@ -1,3 +1,4 @@
+const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -12,6 +13,22 @@ if (!process.env.MIND_RENDER_VOICE_COMMAND && fs.existsSync(voiceServer)) {
   const python = fs.existsSync(venvPython) ? venvPython : "python3";
   process.env.MIND_RENDER_VOICE_CWD = voiceRoot;
   process.env.MIND_RENDER_VOICE_COMMAND = `${python} server.py`;
+}
+
+// Start the voice sidecar (Python captures mic, broadcasts via WebSocket)
+const sidecar = path.join(voiceRoot, "pipecat_server.py");
+if (fs.existsSync(sidecar)) {
+  const venvPython = path.join(voiceRoot, ".venv", "bin", "python");
+  const python = fs.existsSync(venvPython) ? venvPython : "python3";
+  const child = spawn(python, [sidecar], {
+    cwd: voiceRoot,
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, PYTHONUNBUFFERED: "1" },
+  });
+  child.stdout.on("data", (d) => console.log(`[sidecar] ${d.toString().trim()}`));
+  child.stderr.on("data", (d) => console.log(`[sidecar] ${d.toString().trim()}`));
+  child.on("exit", (code) => console.log(`[sidecar] exited (${code})`));
+  process.on("exit", () => child.kill());
 }
 
 require("mind-render");
