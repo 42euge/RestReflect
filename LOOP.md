@@ -109,4 +109,10 @@ rm -rf node_modules package-lock.json && npm install
 
 ## Training data pipeline
 
-6 Esther Perel episodes processed → 5,152 training examples (AnnoMI + podcast + safety). Fine-tuning config ready at `deep-reflect/data/finetune.py`.
+6 Esther Perel episodes processed with speaker diarization (resemblyzer + KMeans). 279 speaker-separated podcast examples + 4,910 AnnoMI+safety = 5,189 total training examples. Fine-tuning config ready at `deep-reflect/data/finetune.py`.
+
+## Known issues
+
+- **PyAudio device error**: `'what'` PortAudio error when headphones/Bluetooth connected. Works fine with MacBook built-in mic as default input. Not a code bug — audio device availability issue.
+- **Voice server race**: App tries to connect to :5111 before voice server finishes startup. Recovers on retry, but logs errors. Could add retry/wait in main.js.
+- **npm git dep caching**: Changes to mind-render/deep-reflect require `rm -rf node_modules package-lock.json && npm install`.
