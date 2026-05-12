@@ -111,8 +111,23 @@ rm -rf node_modules package-lock.json && npm install
 
 6 Esther Perel episodes processed with speaker diarization (resemblyzer + KMeans). 279 speaker-separated podcast examples + 4,910 AnnoMI+safety = 5,189 total training examples. Fine-tuning config ready at `deep-reflect/data/finetune.py`.
 
-## Known issues
+## What's connected end-to-end
 
-- **PyAudio device error**: `'what'` PortAudio error when headphones/Bluetooth connected. Works fine with MacBook built-in mic as default input. Not a code bug — audio device availability issue.
-- **Voice server race**: App tries to connect to :5111 before voice server finishes startup. Recovers on retry, but logs errors. Could add retry/wait in main.js.
+- Mic → Silero VAD → MLX Whisper STT → WebSocket → Electron UI (transcripts)
+- NLP triggers → Ollama LLM → streamed response → TTS (Kokoro am_michael) → ffplay
+- STT → voice server /notes/process → background Ollama tool use → themes/summary
+- Backchannel cues: turn-taking engine → fetch cue WAV → broadcast → client plays
+- TTS auto-enables when sidecar connects; trigger responses always speak
+- Canvas: mood detection → render blocks (spirals/arcs/circles) → particle engine
+
+## Known issues (fixed)
+
+- ~~Voice server race~~: Fixed — mind-render retries on ECONNREFUSED (4 attempts, 1s delay)
+- ~~Sidecar dies after 5min~~: Fixed — keepalive loop restarts mic pipeline automatically
+- ~~TTS silent~~: Fixed — TTS auto-enables on sidecar connect, triggers always speak
+
+## Known issues (remaining)
+
+- **PyAudio transient error**: `'what'` PortAudio error sometimes on startup. Sidecar now retries automatically (keepalive loop). Usually resolves in 3s.
+- **Concurrent model slowdown**: gemma4:e4b (chat) + gemma4:e2b (notes) compete for GPU. Notes processing slows 16s→100s per chunk under load. Themes may be empty.
 - **npm git dep caching**: Changes to mind-render/deep-reflect require `rm -rf node_modules package-lock.json && npm install`.
