@@ -33,35 +33,18 @@ if (fs.existsSync(sidecarScript)) {
   process.on("exit", () => { try { child.kill(); } catch {} });
 }
 
-// Start voice server and wait for it to be ready before launching the app
+// Start voice server for TTS/notes
 const voiceServer = path.join(voiceRoot, "server.py");
-let voiceReady = Promise.resolve();
-
 if (fs.existsSync(voiceServer)) {
-  voiceReady = new Promise((resolve) => {
-    const child = spawn(python, [voiceServer], {
-      cwd: voiceRoot,
-      stdio: ["ignore", "pipe", "pipe"],
-      env: { ...process.env, PYTHONUNBUFFERED: "1" },
-    });
-    let resolved = false;
-    const onData = (d) => {
-      const line = d.toString().trim();
-      console.log(`[voice] ${line}`);
-      if (!resolved && line.includes("geno-voice ready")) {
-        resolved = true;
-        resolve();
-      }
-    };
-    child.stdout.on("data", onData);
-    child.stderr.on("data", onData);
-    child.on("exit", (code) => {
-      console.log(`[voice] exited (${code})`);
-      if (!resolved) { resolved = true; resolve(); }
-    });
-    process.on("exit", () => { try { child.kill(); } catch {} });
-    setTimeout(() => { if (!resolved) { resolved = true; resolve(); } }, 5000);
+  const child = spawn(python, [voiceServer], {
+    cwd: voiceRoot,
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, PYTHONUNBUFFERED: "1" },
   });
+  child.stdout.on("data", (d) => console.log(`[voice] ${d.toString().trim()}`));
+  child.stderr.on("data", (d) => console.log(`[voice] ${d.toString().trim()}`));
+  child.on("exit", (code) => console.log(`[voice] exited (${code})`));
+  process.on("exit", () => { try { child.kill(); } catch {} });
 }
 
-voiceReady.then(() => require("mind-render"));
+require("mind-render");
