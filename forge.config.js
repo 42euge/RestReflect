@@ -7,6 +7,6 @@ module.exports = {
     },
   ],
   packagerConfig: {
-    icon: "./public/mindreflect",
+    icon: "./public/restreflect",
   },
 };

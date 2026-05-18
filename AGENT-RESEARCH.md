@@ -1,4 +1,4 @@
-# MindReflect — Agent Research Playbook
+# RestReflect — Agent Research Playbook
 
 Research is for when you genuinely don't know how to proceed. Not when the work is hard.
 

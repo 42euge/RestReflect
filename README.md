@@ -1,12 +1,12 @@
-# MindReflect
+# RestReflect
 
-A privacy-first reflection and mindfulness app powered by local AI. Everything runs on your device — no cloud, no data leaving your machine. MindReflect combines a visual AI canvas with a therapeutic companion grounded in CBT and motivational interviewing.
+A privacy-first reflection and mindfulness app powered by local AI. Everything runs on your device — no cloud, no data leaving your machine. RestReflect combines a visual AI canvas with a therapeutic companion grounded in CBT and motivational interviewing.
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     MindReflect                         │
+│                     RestReflect                         │
 │              src/main.js (3 lines)                      │
 │     Sets persona + app name, delegates to engine        │
 └──────────┬─────────────────────┬────────────────────────┘
@@ -35,7 +35,7 @@ A privacy-first reflection and mindfulness app powered by local AI. Everything r
 
 | Repo | Role | Stack |
 |------|------|-------|
-| [MindReflect](https://github.com/42euge/MindReflect) | App wrapper | Electron (thin) |
+| [RestReflect](https://github.com/42euge/RestReflect) | App wrapper | Electron (thin) |
 | [mind-render](https://github.com/42euge/mind-render) | App engine | Electron, Ollama, Node.js |
 | [deep-reflect](https://github.com/42euge/deep-reflect) | Therapeutic persona | Node.js, Python tests |
 | [geno-voice](https://github.com/42euge/geno-voice) | Voice pipeline | Python, FastAPI, Whisper, Kokoro |
@@ -64,14 +64,14 @@ cd ../geno-voice
 pip install -r requirements.txt
 python server.py &
 
-# Launch MindReflect
-cd ../MindReflect
+# Launch RestReflect
+cd ../RestReflect
 npm start
 ```
 
 ## How It Works
 
-MindReflect is a thin Electron wrapper (3 lines of code) that configures [mind-render](https://github.com/42euge/mind-render) with the [deep-reflect](https://github.com/42euge/deep-reflect) therapeutic persona.
+RestReflect is a thin Electron wrapper (3 lines of code) that configures [mind-render](https://github.com/42euge/mind-render) with the [deep-reflect](https://github.com/42euge/deep-reflect) therapeutic persona.
 
 - **mind-render** provides the Electron shell: chat UI, particle canvas visualization, Ollama LLM orchestration, and voice I/O
 - **deep-reflect** provides the persona: a ~500-line system prompt implementing CBT-based reflective listening with clinical safety guardrails

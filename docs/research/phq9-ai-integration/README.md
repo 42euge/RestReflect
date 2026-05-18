@@ -1,4 +1,4 @@
-# PHQ-9 Integration in MindReflect AI Companion
+# PHQ-9 Integration in RestReflect AI Companion
 
 Research findings on using PHQ-9 depression screening scores as soft context
 for the deep-reflect therapeutic persona.
@@ -37,7 +37,7 @@ past two weeks (0 = not at all, 1 = several days, 2 = more than half the days,
 
 The PHQ-9 is a screening and severity-tracking tool, NOT a diagnostic
 instrument. A diagnosis of major depressive disorder requires a clinical
-interview using DSM-5-TR or ICD-11 criteria. This is critical for MindReflect:
+interview using DSM-5-TR or ICD-11 criteria. This is critical for RestReflect:
 the persona must never treat a PHQ-9 score as a diagnosis.
 
 ---
@@ -72,13 +72,13 @@ When Item 9 score > 0:
      someone can help."
    - Do NOT lock the user out of the app or make them feel punished.
 
-2. **Data transmitted to MindReflect**:
+2. **Data transmitted to RestReflect**:
    - The `item9_positive` flag (boolean) is transmitted as part of the
      score context.
    - The raw item 9 score (0-3) is transmitted.
    - Timestamp of when it was last positive.
 
-3. **MindReflect persona behavior when item9_positive is true**:
+3. **RestReflect persona behavior when item9_positive is true**:
    - The persona does NOT mention the PHQ-9 score or item 9 directly.
    - The persona becomes more attentive to hopelessness themes in
      conversation.
@@ -90,7 +90,7 @@ When Item 9 score > 0:
 
 ### Legal/Ethical Considerations
 
-- MindReflect is NOT a medical device and does not provide clinical care.
+- RestReflect is NOT a medical device and does not provide clinical care.
 - The system does not have mandatory reporting obligations (it is not a
   licensed clinician).
 - However, failing to surface crisis resources when aware of suicidal
@@ -120,16 +120,16 @@ When Item 9 score > 0:
 - Systems must be evaluated for quality, performance, and appropriateness.
 - Data must comply with privacy regulations (HIPAA in US context).
 
-### Key Distinctions for MindReflect
+### Key Distinctions for RestReflect
 
-| Scenario                          | Risk Level | MindReflect Approach       |
+| Scenario                          | Risk Level | RestReflect Approach       |
 |-----------------------------------|------------|----------------------------|
 | AI administers the PHQ-9          | Higher     | We do NOT do this.         |
 | AI displays/interprets scores     | Higher     | We do NOT do this.         |
 | AI knows severity band only       | Lower      | This is our approach.      |
 | AI knows item-level scores        | Moderate   | Only item 9 flag needed.   |
 
-**Critical distinction**: phq-9000 (iOS) administers the test. MindReflect
+**Critical distinction**: phq-9000 (iOS) administers the test. RestReflect
 (macOS) only receives a severity band and safety flag. The persona never
 discusses scores, never references the PHQ-9 by name, and never tells the
 user their depression level.
@@ -223,18 +223,18 @@ Guidelines for using this context:
    same developer team ID.
 2. **Works without local network** -- syncs over iCloud, no need for
    devices to be on the same WiFi or in proximity.
-3. **Same developer account** -- phq-9000 (iOS) and MindReflect (macOS) share
+3. **Same developer account** -- phq-9000 (iOS) and RestReflect (macOS) share
    a developer team, enabling shared CloudKit container.
 4. **Minimal data** -- we are transmitting ~100 bytes (severity band, flag,
    date, trend). CloudKit handles this trivially.
-5. **Automatic sync** -- CloudKit subscriptions notify MindReflect when new
+5. **Automatic sync** -- CloudKit subscriptions notify RestReflect when new
    assessment data arrives.
 6. **No server to maintain** -- fully Apple-managed infrastructure.
 
 **Implementation sketch:**
 
 ```swift
-// Shared CloudKit container: "iCloud.com.mindreflect.shared"
+// Shared CloudKit container: "iCloud.com.restreflect.shared"
 // Record type: "MoodContext"
 // Fields:
 //   severityBand: String  ("minimal"|"mild"|"moderate"|"moderately_severe"|"severe")
@@ -244,14 +244,14 @@ Guidelines for using this context:
 //   trend: String         ("improving"|"stable"|"worsening"|"insufficient_data")
 
 // phq-9000 writes to private DB after each assessment
-// MindReflect subscribes via CKSubscription for push notifications
+// RestReflect subscribes via CKSubscription for push notifications
 ```
 
 **Fallback: Network Framework + Bonjour (LAN sync)**
 
 For users who disable iCloud or want purely local sync:
-- phq-9000 advertises a Bonjour service (`_mindreflect._tcp`)
-- MindReflect discovers and connects over TLS-PSK on local network
+- phq-9000 advertises a Bonjour service (`_restreflect._tcp`)
+- RestReflect discovers and connects over TLS-PSK on local network
 - Transmits the same minimal MoodContext payload
 - Requires both devices on same network
 
@@ -260,13 +260,13 @@ For users who disable iCloud or want purely local sync:
 - **Data minimization**: Only transmit the severity band and safety flag.
   Never transmit raw answers or individual item scores.
 - **On-device processing**: Score calculation happens entirely in phq-9000.
-  MindReflect never sees the questionnaire responses.
+  RestReflect never sees the questionnaire responses.
 - **User control**: User must explicitly opt in to sharing mood context with
-  MindReflect. Default is OFF.
+  RestReflect. Default is OFF.
 - **No cloud for clinical data**: Even with CloudKit, we use the PRIVATE
   database (E2E encrypted). Consider offering a "local-only" mode using
   Network Framework for privacy-maximalist users.
-- **Deletion**: User can delete all mood context from MindReflect at any time.
+- **Deletion**: User can delete all mood context from RestReflect at any time.
   phq-9000 data remains independent.
 
 ---
@@ -334,7 +334,7 @@ For users who disable iCloud or want purely local sync:
 
 1. **Never let the persona diagnose.** "You have moderate depression" is
    unacceptable regardless of what the data says.
-2. **Never display PHQ-9 scores in MindReflect.** The macOS app does not
+2. **Never display PHQ-9 scores in RestReflect.** The macOS app does not
    show scores. That is phq-9000's job.
 3. **Never let the persona reference the assessment.** No "based on your
    recent check-in" or "your mood tracker shows."

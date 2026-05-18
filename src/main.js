@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 process.env.MIND_RENDER_PERSONA = "deep-reflect";
-process.env.MIND_RENDER_APP_NAME = "MindReflect";
+process.env.MIND_RENDER_APP_NAME = "RestReflect";
 // Gemini API mode: set GEMINI_API_KEY to skip Ollama
 // process.env.GEMINI_API_KEY = "your-key-here";
 
@@ -17,10 +17,10 @@ const python = fs.existsSync(venvPython) ? venvPython : "python3";
 
 if (fs.existsSync(sidecarScript)) {
   const sidecarArgs = [sidecarScript];
-  if (process.env.MINDREFLECT_TEST_AUDIO) {
-    sidecarArgs.push("--test-audio", process.env.MINDREFLECT_TEST_AUDIO);
-    if (process.env.MINDREFLECT_TEST_START) sidecarArgs.push("--start", process.env.MINDREFLECT_TEST_START);
-    if (process.env.MINDREFLECT_TEST_DURATION) sidecarArgs.push("--duration", process.env.MINDREFLECT_TEST_DURATION);
+  if (process.env.RESTREFLECT_TEST_AUDIO) {
+    sidecarArgs.push("--test-audio", process.env.RESTREFLECT_TEST_AUDIO);
+    if (process.env.RESTREFLECT_TEST_START) sidecarArgs.push("--start", process.env.RESTREFLECT_TEST_START);
+    if (process.env.RESTREFLECT_TEST_DURATION) sidecarArgs.push("--duration", process.env.RESTREFLECT_TEST_DURATION);
   }
   const child = spawn(python, sidecarArgs, {
     cwd: voiceRoot,

@@ -1,10 +1,10 @@
-# MindReflect — Agent Dev Playbook
+# RestReflect — Agent Dev Playbook
 
 Build features into the running Electron app. A module that isn't wired into the app doesn't count.
 
 ## The app today
 
-MindReflect is an always-listening voice reflection app:
+RestReflect is an always-listening voice reflection app:
 - Opens with "What's on your mind?"
 - Mic is live from launch (ContinuousListener in voice.js)
 - Browser-side VAD detects speech (RMS > 0.02 for 200ms+)
@@ -19,7 +19,7 @@ MindReflect is an always-listening voice reflection app:
 
 | Repo | What | Key files |
 |------|------|-----------|
-| `MindReflect/` | Wrapper + config | `src/main.js` (3 lines + voice discovery) |
+| `RestReflect/` | Wrapper + config | `src/main.js` (3 lines + voice discovery) |
 | `mind-render/` | Electron engine | `src/client.js` (renderer), `src/voice.js` (ContinuousListener, VoiceRecorder), `src/api.js` (IPC), `src/index.js` (main process) |
 | `deep-reflect/` | Persona + guardrails | `runtime/index.js` (persona), `runtime/safety.js` (crisis), `runtime/canvas.js` (render blocks), `runtime/phq9.js` (score injection) |
 | `geno-voice/` | Voice server + session modules | `server.py` (FastAPI), `session/` (8 modules, 89 tests) |
@@ -30,7 +30,7 @@ MindReflect is an always-listening voice reflection app:
 2. Commit and push each repo
 3. If you changed mind-render or deep-reflect:
    ```bash
-   cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+   cd /Users/euge/code-red/rest-reflect-ws/RestReflect
    rm -rf node_modules/mind-render package-lock.json && npm install
    ```
 4. Kill and relaunch: `pkill -9 -f 'Electron'; npm start`

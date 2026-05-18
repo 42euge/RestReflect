@@ -4,7 +4,7 @@
 
 ## Context
 
-MindReflect needs a voice pipeline with six core requirements: always-listening mode, turn-taking engine, backchanneling, background LLM processing, streaming TTS, and compute orchestration. Current stack: Electron, Whisper (MLX) STT, Kokoro TTS, Gemma 4 (Ollama) LLM, all on Apple Silicon.
+RestReflect needs a voice pipeline with six core requirements: always-listening mode, turn-taking engine, backchanneling, background LLM processing, streaming TTS, and compute orchestration. Current stack: Electron, Whisper (MLX) STT, Kokoro TTS, Gemma 4 (Ollama) LLM, all on Apple Silicon.
 
 ## Comparison Matrix
 
@@ -53,7 +53,7 @@ MindReflect needs a voice pipeline with six core requirements: always-listening 
 
 **Rationale:**
 
-1. **ParallelPipeline is the killer feature.** MindReflect demands background LLM processing while the user speaks. Pipecat's ParallelPipeline is purpose-built for this. LiveKit's pipeline is linear.
+1. **ParallelPipeline is the killer feature.** RestReflect demands background LLM processing while the user speaks. Pipecat's ParallelPipeline is purpose-built for this. LiveKit's pipeline is linear.
 
 2. **Smart Turn v2 fits therapy/reflection.** Turn detection that understands contemplative pauses, filler words, and intonation is critical for a mindfulness app where a 5-second pause might be thinking, not turn-ending.
 

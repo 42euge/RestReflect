@@ -52,11 +52,11 @@ The `geno-notes-wiki-lint` skill performs the health check: stale pages, orphans
 
 ### 1.3 Adapting for streaming input
 
-The standard llm-wiki pattern assumes batch ingest (a document arrives, the LLM processes it all at once). MindReflect's challenge: **the source is a live speech stream arriving in 5-10s chunks**.
+The standard llm-wiki pattern assumes batch ingest (a document arrives, the LLM processes it all at once). RestReflect's challenge: **the source is a live speech stream arriving in 5-10s chunks**.
 
 Adaptation strategy:
 
-| Standard llm-wiki | MindReflect adaptation |
+| Standard llm-wiki | RestReflect adaptation |
 |---|---|
 | Full document → compile once | Chunk arrives → incremental update |
 | Create entity/concept pages | Build session-scoped topic pages that grow |
@@ -210,7 +210,7 @@ Gemma 4 supports **multiple tool calls** in a single response — it can call `w
 | `gemma4:12b` | ~12 GB | ~50 tok/s on M4 Pro | Richer understanding |
 | `gemma4:27b` | ~27 GB | ~25 tok/s on M4 Pro | Best quality, too slow for real-time |
 
-**Recommendation: `gemma4:e4b`** — already used by MindReflect for the main conversation. Using the same model for background processing means it is already loaded in memory (Ollama keep-alive), so no cold-start penalty. If background processing proves too slow on the same model instance, fall back to `gemma4:e2b` for the note-taking branch.
+**Recommendation: `gemma4:e4b`** — already used by RestReflect for the main conversation. Using the same model for background processing means it is already loaded in memory (Ollama keep-alive), so no cold-start penalty. If background processing proves too slow on the same model instance, fall back to `gemma4:e2b` for the note-taking branch.
 
 ### 3.3 Latency analysis
 
@@ -566,7 +566,7 @@ This is exactly the Karpathy pattern operating on session-derived raw sources.
 - geno-notes project scope is at `./geno/geno-notes/` which is gitignored
 - geno-notes global scope is at `~/.geno/geno-notes/` (local)
 - No session data should ever enter global scope without explicit user action
-- Wiki pages derived from sessions should be stored in the **project** scope of MindReflect, not global
+- Wiki pages derived from sessions should be stored in the **project** scope of RestReflect, not global
 
 ---
 

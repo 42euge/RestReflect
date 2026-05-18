@@ -374,7 +374,7 @@ This eliminates TTS GPU contention for the most frequent TTS use case (backchann
 
 ### 8.1 eauchs/speech-to-speech-pipeline
 
-The closest existing project to MindReflect's architecture. It runs Whisper + Ollama + Kokoro locally on Apple Silicon with:
+The closest existing project to RestReflect's architecture. It runs Whisper + Ollama + Kokoro locally on Apple Silicon with:
 - asyncio + queues for pipeline coordination
 - VAD-guided chunking for STT
 - SSE streaming from Ollama for LLM

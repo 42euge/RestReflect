@@ -1,6 +1,6 @@
 # R6 -- Emotional State from Voice (Audio Features)
 
-Research for MindReflect M1 (turn-taking engine) and M2 (canvas as emotional mirror).
+Research for RestReflect M1 (turn-taking engine) and M2 (canvas as emotional mirror).
 
 ---
 
@@ -10,7 +10,7 @@ Research for MindReflect M1 (turn-taking engine) and M2 (canvas as emotional mir
 
 The system should extract three core audio features in real-time from every audio chunk (pitch/F0, energy/RMS, speech rate) and compute a running **arousal score** from them. This is the fast path -- no ML model, sub-millisecond latency, and sufficient for both the turn-taking engine and the canvas. Optionally, a tiny neural model (Wav2Small, 72K parameters, 120KB ONNX, 9ms inference) can run in parallel to provide a more nuanced arousal/valence signal, but the system should function well without it.
 
-**Why arousal over categorical emotions:** MindReflect does not need to classify emotions (angry, sad, happy). It needs to track *activation level* (calm vs. agitated) and *trajectory* (getting more tense vs. calming down). The dimensional model (arousal x valence) is the right abstraction. And for our two consumers (turn-taking engine, canvas), arousal alone covers ~80% of the need:
+**Why arousal over categorical emotions:** RestReflect does not need to classify emotions (angry, sad, happy). It needs to track *activation level* (calm vs. agitated) and *trajectory* (getting more tense vs. calming down). The dimensional model (arousal x valence) is the right abstraction. And for our two consumers (turn-taking engine, canvas), arousal alone covers ~80% of the need:
 
 - Turn-taking: high arousal = extend silence thresholds. Rising arousal = do not interrupt. Falling arousal = backchannels are OK.
 - Canvas: arousal maps directly to particle speed, density, and movement patterns.
@@ -290,7 +290,7 @@ Russell's (1980) circumplex model maps all emotions onto two orthogonal dimensio
 
 ### 5.2 Why Arousal Is Sufficient for v1
 
-For MindReflect's two consumers:
+For RestReflect's two consumers:
 
 **Turn-taking engine:**
 - Rising arousal = user is becoming more activated (could be distress, excitement, or anger). In a therapeutic reflection context, rising arousal almost always means increasing distress. Action: extend silence thresholds, do not interrupt.
@@ -733,7 +733,7 @@ class SpeakerBaseline:
 
 The system should communicate this as "ambient awareness" rather than "emotion detection":
 
-> "MindReflect notices the pace and texture of your voice to adjust its responses. It does not classify your emotions or store voice analysis data. All processing happens on your device."
+> "RestReflect notices the pace and texture of your voice to adjust its responses. It does not classify your emotions or store voice analysis data. All processing happens on your device."
 
 This is truthful (we track arousal trajectory, not discrete emotions), respects the privacy-first principle, and frames the capability as serving the user rather than monitoring them.
 

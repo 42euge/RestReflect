@@ -4,7 +4,7 @@
 
 ## Context
 
-MindReflect is a listening-first reflection/mindfulness app. Users talk for extended periods (2-5 minutes). The system needs a turn-taking engine that decides: stay silent (default), play a backchannel cue ("mhmm", "I see"), or generate a full LLM response. The app is closer to a therapist listening to a client than a chatbot. Pauses are often contemplation, not turn-endings.
+RestReflect is a listening-first reflection/mindfulness app. Users talk for extended periods (2-5 minutes). The system needs a turn-taking engine that decides: stay silent (default), play a backchannel cue ("mhmm", "I see"), or generate a full LLM response. The app is closer to a therapist listening to a client than a chatbot. Pauses are often contemplation, not turn-endings.
 
 Current stack: Pipecat (voice AI framework) with Smart Turn v2/v3 for end-of-turn detection, Silero VAD, mlx-whisper for STT, Ollama for LLM inference, all local/private.
 
@@ -42,7 +42,7 @@ Listeners predict the end of a TCU using four types of cues:
 
 ### 1.2 Thinking Pause vs. "Your Turn" Pause
 
-This is the central challenge for MindReflect. Research does not provide a single clean threshold, but offers converging evidence:
+This is the central challenge for RestReflect. Research does not provide a single clean threshold, but offers converging evidence:
 
 **Duration alone is insufficient.** While longer pauses correlate with turn-yielding, a 2-second pause mid-thought and a 2-second pause at the end of a statement are different animals. Context matters enormously.
 
@@ -91,7 +91,7 @@ Therapy represents a fundamentally different turn-taking regime from casual conv
 
 **Carl Rogers' person-centered therapy model:**
 
-Rogers' approach is directly relevant to MindReflect's design philosophy. The three core conditions:
+Rogers' approach is directly relevant to RestReflect's design philosophy. The three core conditions:
 
 1. **Unconditional positive regard**: Accepting without judgment. For an AI: no corrective or evaluative responses.
 2. **Empathic understanding**: Reflecting back what the client communicates. For an AI: reflections, not interpretations.
@@ -126,7 +126,7 @@ End-of-turn detection has evolved from simple silence timers to ML models operat
 
 ### 2.2 Smart Turn (Pipecat/Daily.co)
 
-Smart Turn is the most directly relevant model for MindReflect, as it's already integrated into Pipecat.
+Smart Turn is the most directly relevant model for RestReflect, as it's already integrated into Pipecat.
 
 **Architecture evolution:**
 
@@ -155,7 +155,7 @@ SmartTurnParams(
 )
 ```
 
-**For MindReflect, the key insight:** Smart Turn's `stop_secs` default of 3s is already much longer than typical voice AI defaults (~0.7-1.5s), but for a reflective context, we may want to increase it further or layer additional logic on top.
+**For RestReflect, the key insight:** Smart Turn's `stop_secs` default of 3s is already much longer than typical voice AI defaults (~0.7-1.5s), but for a reflective context, we may want to increase it further or layer additional logic on top.
 
 ### 2.3 Skantze's TurnGPT and Voice Activity Projection (VAP)
 
@@ -188,7 +188,7 @@ The fundamental tradeoff:
 - **Higher threshold** (require high confidence) = fewer interruptions but potentially awkward silences
 - **Longer silence window** = more accurate but slower
 
-For MindReflect, the tradeoff is heavily weighted toward *fewer interruptions*. An extra 2 seconds of silence is acceptable; a single interruption of deep reflection is not.
+For RestReflect, the tradeoff is heavily weighted toward *fewer interruptions*. An extra 2 seconds of silence is acceptable; a single interruption of deep reflection is not.
 
 Industry benchmarks for voice agents:
 - Natural human gap: ~200ms
@@ -196,7 +196,7 @@ Industry benchmarks for voice agents:
 - Noticeable but acceptable: 500-1000ms
 - Users start to disengage: >1000ms
 
-**These benchmarks are for chatbot-style voice agents.** For MindReflect, the calculus is inverted: the "user starts to disengage" threshold doesn't apply because the user is the primary speaker. The system's response latency is less critical than its restraint.
+**These benchmarks are for chatbot-style voice agents.** For RestReflect, the calculus is inverted: the "user starts to disengage" threshold doesn't apply because the user is the primary speaker. The system's response latency is less critical than its restraint.
 
 ---
 
@@ -315,7 +315,7 @@ Each recording should vary in pitch, duration, and energy to avoid the "same sam
 
 ---
 
-## Part 4: Recommended Turn-Taking Policy for MindReflect
+## Part 4: Recommended Turn-Taking Policy for RestReflect
 
 ### 4.1 Architecture: Three-Tier Response System
 
@@ -343,7 +343,7 @@ User speaks
 
 #### Silence/Turn Detection
 
-| Parameter | Default (chatbot) | MindReflect value | Rationale |
+| Parameter | Default (chatbot) | RestReflect value | Rationale |
 |---|---|---|---|
 | `stop_secs` (VAD silence trigger) | 0.7-1.5s | **4.0s** | Reflective pauses are longer; 3s is still mid-thought territory |
 | Smart Turn confidence threshold | 0.5 | **0.7** | Higher bar for "user is done" |
@@ -487,13 +487,13 @@ When the system does generate a full response (Tier 3), it should follow therape
 
 ### 5.1 Layering on Smart Turn
 
-Smart Turn handles the "is the user done speaking?" question well, but MindReflect needs a layer on top:
+Smart Turn handles the "is the user done speaking?" question well, but RestReflect needs a layer on top:
 
 ```
 Pipecat pipeline:
-    AudioInput -> SileroVAD -> SmartTurnV3 -> MindReflectTurnPolicy -> ResponseRouter
+    AudioInput -> SileroVAD -> SmartTurnV3 -> RestReflectTurnPolicy -> ResponseRouter
 
-MindReflectTurnPolicy:
+RestReflectTurnPolicy:
     - Receives Smart Turn confidence scores
     - Applies adaptive thresholds (section 4.2)
     - Consults transcript context (emotional content, duration, question detection)
@@ -519,26 +519,26 @@ For adaptive threshold decisions, the system needs access to:
 
 This can be a lightweight context object updated by the STT pipeline.
 
-### 5.4 Smart Turn v3 vs v2 for MindReflect
+### 5.4 Smart Turn v3 vs v2 for RestReflect
 
 **Recommend Smart Turn v3** over v2:
 - 100x faster inference (12ms vs ~100ms on CPU)
 - Better accuracy on short utterances (v3.2)
 - Much smaller model (8M params vs ~400MB)
 - Better noise handling
-- The latency savings aren't critical for MindReflect (we're waiting 4-6s anyway), but the accuracy improvements and smaller footprint are valuable.
+- The latency savings aren't critical for RestReflect (we're waiting 4-6s anyway), but the accuracy improvements and smaller footprint are valuable.
 
 ---
 
 ## Part 6: Open Questions and Future Work
 
-1. **Backchannel prediction from audio features alone vs. requiring transcript**: Research suggests audio-only prediction (pitch, energy, duration in the 275-875ms pre-backchannel window) is viable. For MindReflect, using both audio features (for timing) and transcript (for emotional context / type selection) is the strongest approach.
+1. **Backchannel prediction from audio features alone vs. requiring transcript**: Research suggests audio-only prediction (pitch, energy, duration in the 275-875ms pre-backchannel window) is viable. For RestReflect, using both audio features (for timing) and transcript (for emotional context / type selection) is the strongest approach.
 
 2. **Adaptive thresholds via user feedback**: Over multiple sessions, the system could learn an individual user's pause patterns. Some people think in 3-second silences; others need 10 seconds. A simple running average of the user's typical intra-turn pauses could inform threshold adjustment.
 
 3. **Session phase awareness**: Therapeutic silences function differently at session start (settling in), middle (deep work), and end (wrapping up). The turn-taking policy could have phase-aware defaults.
 
-4. **Interruption handling**: What happens when the system starts a response and the user resumes speaking? Pipecat supports interruption detection, but MindReflect should have a very low bar for yielding back -- if the user starts talking, the system stops immediately, no "let me finish my thought."
+4. **Interruption handling**: What happens when the system starts a response and the user resumes speaking? Pipecat supports interruption detection, but RestReflect should have a very low bar for yielding back -- if the user starts talking, the system stops immediately, no "let me finish my thought."
 
 5. **VAP model integration**: Ekstedt and Skantze's Voice Activity Projection model could provide richer turn-taking predictions than Smart Turn alone, including backchannel timing. However, it requires processing audio from both speakers (dyadic), which adds complexity. Worth evaluating if Smart Turn + heuristics proves insufficient.
 

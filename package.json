@@ -1,6 +1,6 @@
 {
-  "name": "mind-reflect",
-  "productName": "MindReflect",
+  "name": "rest-reflect",
+  "productName": "RestReflect",
   "version": "0.1.0",
   "description": "A privacy-first reflection and mindfulness app powered by local AI.",
   "main": "src/main.js",

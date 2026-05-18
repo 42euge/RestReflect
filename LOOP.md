@@ -1,4 +1,4 @@
-# MindReflect Loop
+# RestReflect Loop
 
 Ship working features into the actual app. Test with real audio. Fix what's broken.
 
@@ -9,7 +9,7 @@ Invoke with: `/loop 25min LOOP.md`
 ## Architecture
 
 ```
-MindReflect (npm start)
+RestReflect (npm start)
   ├─ Pipecat sidecar (Python, auto-spawned)
   │    ├─ PyAudio mic capture (system mic, no browser)
   │    ├─ Silero VAD (speech detection)
@@ -42,14 +42,14 @@ MindReflect (npm start)
 
 ### Live test (best)
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+cd /Users/euge/code-red/rest-reflect-ws/RestReflect
 npm start
 # Speak into the mic. The sidecar auto-starts.
 ```
 
 ### Podcast test (automated, no mic needed)
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+cd /Users/euge/code-red/rest-reflect-ws/geno-voice
 .venv/bin/python examples/podcast_test.py --start 120 --duration 60
 ```
 
@@ -62,7 +62,7 @@ cd /Users/euge/code-red/mind-reflect-ws/geno-voice
 
 ### 1. Launch
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+cd /Users/euge/code-red/rest-reflect-ws/RestReflect
 pkill -9 -f 'Electron' 2>/dev/null
 pkill -f 'pipecat_server' 2>/dev/null
 npm start
@@ -70,7 +70,7 @@ npm start
 
 ### 2. Check sidecar is capturing
 ```bash
-ls -lh ~/.mindreflect/sessions/*/recordings/full-session.wav
+ls -lh ~/.restreflect/sessions/*/recordings/full-session.wav
 ```
 File should be growing. If not, sidecar didn't start.
 
@@ -86,7 +86,7 @@ Speak into the mic, or run podcast test. Check:
 ### 4. Fix what's wrong
 Change code. After changing mind-render or deep-reflect:
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+cd /Users/euge/code-red/rest-reflect-ws/RestReflect
 rm -rf node_modules package-lock.json && npm install
 ```
 

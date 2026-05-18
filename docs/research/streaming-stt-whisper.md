@@ -4,7 +4,7 @@
 
 ## Context
 
-MindReflect is a reflection/mindfulness app where users talk for extended periods (minutes, not seconds). We need continuous STT that transcribes in real-time as the user speaks so an LLM can process the transcript in the background (writing notes, summaries, wiki entries) while the user is still talking.
+RestReflect is a reflection/mindfulness app where users talk for extended periods (minutes, not seconds). We need continuous STT that transcribes in real-time as the user speaks so an LLM can process the transcript in the background (writing notes, summaries, wiki entries) while the user is still talking.
 
 Current stack: `mlx-community/whisper-large-v3-turbo` via mlx-whisper, Silero VAD (RMS-based silence detection, threshold 0.02, min chunk 0.5s), Apple Silicon Mac, Pipecat as the voice pipeline framework.
 
@@ -22,11 +22,11 @@ Whisper has a 30-second receptive field. It processes audio in fixed windows and
 |---|---|---|---|
 | 1-2s | Very low (~1-2s) | Poor (partial words, hallucination risk) | Speculative preview only |
 | 3-5s | Low (~3-5s) | Moderate (some boundary errors) | Real-time streaming |
-| 5-10s | Medium (~5-10s) | Good (most utterances complete) | **Recommended for MindReflect** |
+| 5-10s | Medium (~5-10s) | Good (most utterances complete) | **Recommended for RestReflect** |
 | 10-20s | High (~10-20s) | Very good (full sentences) | Near-batch quality |
 | 20-30s | Very high | Excellent (near-batch) | Batch processing |
 
-**Recommendation for MindReflect: VAD-guided chunks of 5-10 seconds.** This gives good accuracy with latency acceptable for background LLM processing (we do not need instant word-by-word display -- we need the transcript available for note-taking tools).
+**Recommendation for RestReflect: VAD-guided chunks of 5-10 seconds.** This gives good accuracy with latency acceptable for background LLM processing (we do not need instant word-by-word display -- we need the transcript available for note-taking tools).
 
 ### Word boundary handling
 
@@ -147,7 +147,7 @@ Available MLX models: `TINY`, `MEDIUM`, `LARGE_V3`, `LARGE_V3_TURBO`, `DISTIL_LA
 
 ### The Pipecat turn-based limitation
 
-**Critical finding:** Pipecat's `SegmentedSTTService` is designed for conversational turn-taking. It waits for VAD to signal "user stopped speaking" before transcribing. This is wrong for MindReflect's use case where the user speaks for minutes continuously.
+**Critical finding:** Pipecat's `SegmentedSTTService` is designed for conversational turn-taking. It waits for VAD to signal "user stopped speaking" before transcribing. This is wrong for RestReflect's use case where the user speaks for minutes continuously.
 
 In our use case, the user may speak for 3-5 minutes without a long pause. The VAD would never trigger "stopped speaking," and no transcription would occur until they stop.
 
@@ -212,7 +212,7 @@ Apple Silicon's unified memory architecture enables this:
 **Practical behavior:** When both models are active simultaneously, they compete for GPU compute time (not memory bandwidth). MLX does not yet have a built-in scheduler for multi-model inference. In practice:
 - Whisper inference (0.5-1.4s for a 5-10s chunk) blocks during that brief window
 - Gemma inference can run during the pauses between Whisper calls
-- For MindReflect, this works well: transcribe a chunk -> send text to Gemma -> transcribe next chunk
+- For RestReflect, this works well: transcribe a chunk -> send text to Gemma -> transcribe next chunk
 
 **Risk:** If both are running simultaneously, throughput degrades. The Pipecat ParallelPipeline helps here by sequencing: STT runs first, then sends frames to the background LLM branch.
 
@@ -241,7 +241,7 @@ Real-time transcription systems show two types of results:
 - **AssemblyAI Universal-Streaming:** ~300ms latency. Partial and final results via WebSocket. Production-grade.
 - **Common pattern:** Audio -> WebSocket -> server buffers -> inference -> delta events back to client. Each response contains newly available text.
 
-### Recommendation for MindReflect
+### Recommendation for RestReflect
 
 For our use case (background LLM processing, not real-time UI display), we do not need speculative display. The LLM only needs confirmed text. Use LocalAgreement-2 or AlignAtt to get confirmed-only text with 2-5s latency.
 

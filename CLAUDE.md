@@ -1,4 +1,4 @@
-# MindReflect
+# RestReflect
 
 Thin Electron wrapper that combines mind-render (engine) with deep-reflect (persona) into a privacy-first therapeutic reflection app.
 

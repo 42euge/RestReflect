@@ -55,7 +55,7 @@ deep-reflect implements this contract with CBT-grounded reflective listening, cl
 
 ## Persona Loading
 
-1. MindReflect sets `MIND_RENDER_PERSONA=deep-reflect` in `src/main.js`
+1. RestReflect sets `MIND_RENDER_PERSONA=deep-reflect` in `src/main.js`
 2. mind-render's `persona.js:loadPersona()` reads the env var
 3. Since the value doesn't start with `.`, it's passed directly to `require()`
 4. `require('deep-reflect')` resolves to `node_modules/deep-reflect/runtime/index.js` via the root `package.json`

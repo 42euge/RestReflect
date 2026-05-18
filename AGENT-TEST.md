@@ -1,4 +1,4 @@
-# MindReflect — Agent Test Playbook
+# RestReflect — Agent Test Playbook
 
 Test the running app. Not unit tests — the actual Electron app with real audio, real LLM responses, real user experience.
 
@@ -7,8 +7,8 @@ Test the running app. Not unit tests — the actual Electron app with real audio
 The primary test method: play TTS audio through the speakers so the app's always-listening mic captures it. Uses a female voice (af_heart) so it's distinct from the app's male response voice (am_michael).
 
 ```bash
-# Prerequisites: MindReflect running + voice server at :5111
-cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+# Prerequisites: RestReflect running + voice server at :5111
+cd /Users/euge/code-red/rest-reflect-ws/geno-voice
 
 # Run with default phrases
 .venv/bin/python examples/loopback_test.py
@@ -41,21 +41,21 @@ pkill -f 'ollama serve' 2>/dev/null
 pkill -f 'python.*server.py' 2>/dev/null
 
 # Start voice server
-cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+cd /Users/euge/code-red/rest-reflect-ws/geno-voice
 lsof -ti :5111 | xargs kill -9 2>/dev/null; sleep 1
 .venv/bin/python server.py 2>&1 &
 
-# Start app (from MindReflect dir!)
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+# Start app (from RestReflect dir!)
+cd /Users/euge/code-red/rest-reflect-ws/RestReflect
 npm start 2>&1 &
 ```
 
 ## Updating dependencies
 
-When you change mind-render or deep-reflect, you MUST rebuild MindReflect:
+When you change mind-render or deep-reflect, you MUST rebuild RestReflect:
 
 ```bash
-cd /Users/euge/code-red/mind-reflect-ws/MindReflect
+cd /Users/euge/code-red/rest-reflect-ws/RestReflect
 rm -rf node_modules/mind-render package-lock.json && npm install
 ```
 
@@ -66,16 +66,16 @@ rm -rf node_modules/mind-render package-lock.json && npm install
 - **Whisper hallucinations**: repetitive text like "they used to apply they used to apply" — the client-side filter should catch these
 - **Feedback loop**: app transcribes its own TTS output — the mute/unmute logic should prevent this
 - **Echo cancellation**: currently OFF (kills real speech). Feedback prevention is via muting during response + 2s unmute delay
-- **Persona not loading**: title shows "Mind Render" instead of "MindReflect · Reflect" — means npm install didn't pick up latest code
+- **Persona not loading**: title shows "Mind Render" instead of "RestReflect · Reflect" — means npm install didn't pick up latest code
 
 ## Unit tests (secondary)
 
 ```bash
 # geno-voice session modules: 89 tests
-cd /Users/euge/code-red/mind-reflect-ws/geno-voice
+cd /Users/euge/code-red/rest-reflect-ws/geno-voice
 .venv/bin/python -m pytest tests/ -v
 
 # deep-reflect safety eval: 26 tests
-cd /Users/euge/code-red/mind-reflect-ws/deep-reflect
+cd /Users/euge/code-red/rest-reflect-ws/deep-reflect
 python -m pytest tests/test_safety.py -v
 ```

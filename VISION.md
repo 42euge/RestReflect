@@ -1,14 +1,14 @@
-# MindReflect Vision
+# RestReflect Vision
 
 A private space to think out loud — voice, visuals, and a companion that listens well.
 
 ## What it is
 
-MindReflect is a local-only reflection app. You talk or type, a local AI companion reflects back, and a canvas responds with abstract visuals. Nothing leaves your device. Not therapy — a thinking tool for when you need to process something difficult and can't or won't say it to another person.
+RestReflect is a local-only reflection app. You talk or type, a local AI companion reflects back, and a canvas responds with abstract visuals. Nothing leaves your device. Not therapy — a thinking tool for when you need to process something difficult and can't or won't say it to another person.
 
 ## Where we are now
 
-The wrapper works. Three lines of code connect mind-render (the engine) to deep-reflect (the persona), and the app launches as MindReflect with the Reflect persona loaded. The foundation:
+The wrapper works. Three lines of code connect mind-render (the engine) to deep-reflect (the persona), and the app launches as RestReflect with the Reflect persona loaded. The foundation:
 
 - [x] Chat with text input and streamed LLM responses
 - [x] Particle canvas visualization from render blocks
@@ -75,7 +75,7 @@ The system is three resources running in parallel — STT, LLM, TTS — orchestr
 
 **Implementation:**
 
-- [x] geno-voice auto-discovery from MindReflect wrapper (detects sibling geno-voice repo)
+- [x] geno-voice auto-discovery from RestReflect wrapper (detects sibling geno-voice repo)
 - [x] geno-voice auto-launch from mind-render (like Ollama) using MIND_RENDER_VOICE_COMMAND
 - [x] Always-listening mode: mic live by default, continuous chunked STT
 - [x] Compute monitor: orchestrates STT/LLM/TTS resources, schedules work by priority
@@ -133,12 +133,12 @@ A good reflection has shape: arrival, exploration, and a gentle landing. Right n
 
 ### M4 — PHQ-9 integration
 
-phq-9000 tracks depression scores over time. MindReflect should be aware of that context without violating the "not a therapist" boundary.
+phq-9000 tracks depression scores over time. RestReflect should be aware of that context without violating the "not a therapist" boundary.
 
-- [ ] Local API between phq-9000 (iOS) and MindReflect (macOS) via Bonjour/mDNS
+- [ ] Local API between phq-9000 (iOS) and RestReflect (macOS) via Bonjour/mDNS
 - [x] Persona receives latest PHQ-9 score as soft context ("recent self-assessment suggests moderate symptoms")
 - [x] Score trends inform gentle nudges ("You mentioned things have been harder lately — is that still true?")
-- [x] Never display scores in the MindReflect UI — that's phq-9000's job
+- [x] Never display scores in the RestReflect UI — that's phq-9000's job
 - [x] Referral-to-human guardrail if scores consistently indicate severe range
 
 ### M5 — Fine-tuned Reflect model

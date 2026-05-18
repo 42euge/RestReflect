@@ -1,6 +1,6 @@
 {
   "folders": [
-    { "name": "MindReflect", "path": "." },
+    { "name": "RestReflect", "path": "." },
     { "name": "mind-render", "path": "../mind-render" },
     { "name": "deep-reflect", "path": "../deep-reflect" },
     { "name": "geno-voice", "path": "../geno-voice" },
