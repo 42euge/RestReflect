@@ -1,0 +1,79 @@
+\begin{thebibliography}{10}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Fitzpatrick et~al.(2017)Fitzpatrick, Darcy, and
+  Vierhile]{fitzpatrick2017woebot}
+Kathleen~Kara Fitzpatrick, Alison Darcy, and Molly Vierhile.
+\newblock Delivering cognitive behavior therapy to young adults with symptoms
+  of depression via a fully automated conversational agent ({Woebot}): A
+  randomized controlled trial.
+\newblock \emph{JMIR Mental Health}, 4\penalty0 (2):\penalty0 e19, 2017.
+
+\bibitem[Inkster et~al.(2018)Inkster, Sarda, and Subramanian]{inkster2018wysa}
+Becky Inkster, Shubhankar Sarda, and Vinod Subramanian.
+\newblock An empathy-driven, conversational artificial intelligence agent
+  ({Wysa}) for digital mental well-being: Real-world data evaluation
+  mixed-methods study.
+\newblock \emph{JMIR mHealth and uHealth}, 6\penalty0 (11):\penalty0 e12106,
+  2018.
+
+\bibitem[Kroenke et~al.(2001)Kroenke, Spitzer, and Williams]{kroenke2001phq9}
+Kurt Kroenke, Robert~L Spitzer, and Janet~BW Williams.
+\newblock The {PHQ-9}: Validity of a brief depression severity measure.
+\newblock \emph{Journal of General Internal Medicine}, 16\penalty0
+  (9):\penalty0 606--613, 2001.
+
+\bibitem[Kumar et~al.(2024)]{kumar2024gpt4}
+Vishesh Kumar et~al.
+\newblock {GPT-4} generated complex reflections for a motivational interviewing
+  chatbot.
+\newblock \emph{JMIR Mental Health}, 11:\penalty0 e57058, 2024.
+
+\bibitem[Lieberman et~al.(2007)Lieberman, Eisenberger, Crockett, Tom, Pfeifer,
+  and Way]{lieberman2007putting}
+Matthew~D Lieberman, Naomi~I Eisenberger, Molly~J Crockett, Sabrina~M Tom,
+  Jennifer~H Pfeifer, and Baldwin~M Way.
+\newblock Putting feelings into words: Affect labeling disrupts amygdala
+  activity in response to affective stimuli.
+\newblock \emph{Psychological Science}, 18\penalty0 (5):\penalty0 421--428,
+  2007.
+
+\bibitem[Magill et~al.(2018)Magill, Apodaca, Borsari, Gaume, Hoadley, Gordon,
+  Tonigan, and Moyers]{magill2018meta}
+Molly Magill, Timothy~R Apodaca, Brian Borsari, Jacques Gaume, Ariel Hoadley,
+  Rebecca~EF Gordon, J~Scott Tonigan, and Theresa Moyers.
+\newblock A meta-analysis of motivational interviewing process: Technical,
+  relational, and conditional process models of change.
+\newblock \emph{Journal of Consulting and Clinical Psychology}, 86\penalty0
+  (2):\penalty0 140--157, 2018.
+
+\bibitem[Miller and Rollnick(2013)]{miller2013motivational}
+William~R Miller and Stephen Rollnick.
+\newblock \emph{Motivational Interviewing: Helping People Change}.
+\newblock Guilford Press, 3rd edition, 2013.
+
+\bibitem[Plutchik(1980)]{plutchik1980general}
+Robert Plutchik.
+\newblock A general psychoevolutionary theory of emotion.
+\newblock In \emph{Emotion: Theory, Research, and Experience}, volume~1, pages
+  3--33. Academic Press, 1980.
+
+\bibitem[Rogers(1957)]{rogers1957necessary}
+Carl~R Rogers.
+\newblock The necessary and sufficient conditions of therapeutic personality
+  change.
+\newblock \emph{Journal of Consulting Psychology}, 21\penalty0 (2):\penalty0
+  95--103, 1957.
+
+\bibitem[Weizenbaum(1966)]{weizenbaum1966eliza}
+Joseph Weizenbaum.
+\newblock {ELIZA}---a computer program for the study of natural language
+  communication between man and machine.
+\newblock \emph{Communications of the ACM}, 9\penalty0 (1):\penalty0 36--45,
+  1966.
+
+\end{thebibliography}
