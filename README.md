@@ -6,6 +6,8 @@ A privacy-first voice companion for therapeutic reflection, powered by local AI.
 
 The core feature is **Reflect Mode** — the system mirrors back what you said before responding, implementing reflective listening from motivational interviewing. A 2200-particle visual canvas acts as the system's body language, and a multi-signal turn-taking engine treats silence as therapeutic space (4–16s adaptive thresholds vs. the industry's 300ms).
 
+![Emotion & Feeling Wheel](assets/emotion-wheel.png)
+
 ## Architecture
 
 ```
