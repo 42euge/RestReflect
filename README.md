@@ -1,6 +1,10 @@
 # RestReflect
 
-A privacy-first reflection and mindfulness app powered by local AI. Everything runs on your device — no cloud, no data leaving your machine. RestReflect combines a visual AI canvas with a therapeutic companion grounded in CBT and motivational interviewing.
+A privacy-first voice companion for therapeutic reflection, powered by local AI. Everything runs on your device — no cloud, no data leaving your machine.
+
+**[restreflect.com](https://restreflect.com)** · **[Demo Video](https://youtu.be/RU4YAyp-zxU)** · **[Paper (PDF)](paper/main.pdf)**
+
+The core feature is **Reflect Mode** — the system mirrors back what you said before responding, implementing reflective listening from motivational interviewing. A 2200-particle visual canvas acts as the system's body language, and a multi-signal turn-taking engine treats silence as therapeutic space (4–16s adaptive thresholds vs. the industry's 300ms).
 
 ## Architecture
 
