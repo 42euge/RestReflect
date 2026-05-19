@@ -68,3 +68,14 @@ Every mainstream voice agent — ChatGPT, Gemini Live, Claude, Alexa+, Siri — 
 **Silence-first turn-taking:** Every other voice agent optimizes response speed. In therapy, interrupting someone processing an emotion is worse than making them wait. The safer default is silence.
 
 **Particle canvas over chat UI:** Ambient visual feedback occupies peripheral attention without demanding focus. The visual metaphor (cosmic particles = thoughts, big crunch = concentration, big bang = release) maps naturally to the therapeutic process.
+
+## Safety: Beyond Crisis Detection
+
+RestReflect doesn't just catch emergencies — it proactively encourages human connection. The persona is prompted to suggest talking to friends, family, or reconnecting with someone the user trusts. When conversation aligns with established programs (AA, SLAA, Al-Anon, SMART Recovery), the system weaves their principles into reflections with attribution. A local resource database provides meeting locations by zip code, affordable therapy directories, and crisis lines — surfaced contextually, not as a dump. Users own their data: session audio, transcripts, and PHQ-9 scores live in a visible folder they control, with one-click delete and encrypted export.
+
+## Links
+
+- **Website:** [restreflect.com](https://restreflect.com)
+- **Demo:** [YouTube](https://youtu.be/RU4YAyp-zxU)
+- **Code:** [github.com/42euge/RestReflect](https://github.com/42euge/RestReflect)
+- **Paper:** [PDF](https://github.com/42euge/RestReflect/blob/main/paper/main.pdf)
