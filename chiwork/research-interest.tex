@@ -1,0 +1,72 @@
+\documentclass[manuscript,anonymous=false]{acmart}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+\title{Silence, Voice, and Visual Space: Rethinking AI Interaction for Work}
+
+\author{Eugenio Rivera Ramos}
+\affiliation{%
+  \institution{University of Washington}
+  \department{Department of Electrical Engineering}
+  \city{Seattle}
+  \state{Washington}
+  \country{USA}
+}
+\email{42euge@gmail.com}
+
+\begin{abstract}
+I am a professional master's student in Electrical Engineering at the University of Washington interested in how voice-first AI interaction---grounded in silence, reflection, and ambient visual feedback---can transform how people work with AI. Current voice agents optimize for speed at every moment, making them unsuitable for cognitive work tasks that require thinking time: brainstorming, debugging, creative problem-solving, and navigating the emotional dimensions of professional life. I am building a modular, fully local platform that treats silence as a feature, pairs voice with a freeform visual canvas, and runs entirely on-device---enabling AI adoption in privacy-sensitive industries that cannot risk sending data to cloud APIs.
+\end{abstract}
+
+\maketitle
+
+\section{Research Interest}
+
+Voice is an underresearched modality for human-AI work interaction. While text-based AI tools (chatbots, copilots, search) have been widely adopted, voice agents remain stuck in a command-and-response paradigm inherited from virtual assistants. Every commercial voice agent---ChatGPT Advanced Voice Mode, Gemini Live, Alexa, Siri---shares the same design assumption: silence is wasted time. They detect 300--500\,ms of quiet, assume the user is done, and race to respond.
+
+This assumption fails for work. When a developer is thinking through an architectural decision, when a technician is diagnosing a complex fault, when anyone is brainstorming---they need space to think. Interrupting that processing with an eager AI response doesn't just feel wrong; it disrupts the cognitive work the person was doing. The same pattern that makes voice agents awkward in casual conversation makes them actively counterproductive for the tasks where AI assistance could matter most.
+
+I am broadly interested in two connected questions: (1) How should voice-based AI interaction be designed to support cognitive and creative work? (2) How can private, local AI companions help workers process the emotional and social dimensions of professional life---stress, interpersonal conflict, career uncertainty---that they would never discuss with a cloud-hosted service?
+
+\section{What I Have Done}
+
+I have built a modular platform that demonstrates an alternative approach to voice-first AI interaction. The system consists of three independent components:
+
+\textbf{geno-voice} is a voice pipeline built on Whisper (STT), Kokoro (TTS), and Silero (VAD) with a multi-signal turn-taking engine that defaults to silence. Instead of 300\,ms thresholds, the engine uses adaptive windows of 4--16 seconds, expanding based on detected emotional activation. Four signal tiers---adaptive silence, prosodic analysis, NLP pattern matching, and background LLM assessment---fuse to determine when a response is actually warranted. The fastest confident signal wins, but the default is to hold space.
+
+\textbf{mind-render} is a freeform visual canvas---a particle engine with 2200 particles that communicates AI state through ambient motion rather than text. When the system is listening, particles drift in gentle patterns. When responding, the AI's voice drives particle displacement through audio frequency analysis. When preparing a substantive response, particles collapse inward (a ``big crunch'') before exploding outward. This visual channel operates below conscious attention, letting users absorb state changes peripherally without breaking their train of thought. The canvas also hosts an interactive emotion wheel based on Plutchik's model, enabling affect labeling through gesture rather than typing.
+
+\textbf{deep-reflect} is a therapeutic persona layer implementing motivational interviewing and CBT techniques---the first application built on the platform. It demonstrates the design principles in a context where silence, reflection, and privacy are non-negotiable.
+
+The entire system runs locally on Apple Silicon with no cloud dependencies. All models---Whisper, Gemma~4, Kokoro, Silero---execute on-device via Metal acceleration. The system works with WiFi off.
+
+In my professional work, I am exploring how these same interaction patterns apply to AI tools for software developers and field technicians. The problems are remarkably similar: developers need thinking time when debugging with an AI pair programmer, and technicians diagnosing equipment need to talk through observations without being interrupted by premature suggestions.
+
+\section{Future Plans}
+
+After completing my master's degree, I plan to continue building at the intersection of voice interaction, visual computing, and local AI---likely in an applied research or product role focused on AI tools for work.
+
+Several directions are particularly compelling. First, \textbf{adapting geno-voice and mind-render for work contexts}: brainstorming sessions, code review conversations, technical diagnosis, and meeting facilitation where an AI participant knows when to contribute and when to listen. Second, \textbf{worker well-being through private AI}: the ability to vent about workplace stress, process difficult interactions with colleagues, capture tasks from unstructured talk, and navigate professional relationships---all without any data leaving the device. This requires local-only architecture because workers will not honestly discuss their manager, their frustrations, or their career anxieties with a system that sends data to a third party.
+
+Third, and perhaps most impactful: \textbf{enabling AI adoption in regulated industries}. Finance, healthcare, legal, and government organizations are largely unable to adopt AI assistants because sending proprietary or patient data to cloud APIs violates regulatory requirements, and most organizations lack the IT infrastructure to deploy local AI safely. Building tools that are local by design---not local as an afterthought---removes this barrier entirely. The privacy guarantee becomes architectural (there are no network calls in the code) rather than contractual (trust our privacy policy).
+
+\section*{Connection to CHIWORK}
+
+I am interested in how voice and visual interaction modalities change the way people work with AI. Current AI work tools are overwhelmingly text-based and cloud-hosted, which excludes voice-first workflows and privacy-sensitive industries simultaneously. My work directly addresses two CHIWORK themes: \emph{working and trust with AI and automation} (designing voice agents that respect cognitive rhythms rather than optimizing for speed) and \emph{supporting worker well-being and health} (private AI companions for processing work-related stress and navigating professional relationships). The freeform visual canvas (mind-render) represents a novel approach to AI interaction for work that moves beyond chat interfaces.
+
+\section*{Objective}
+
+I want to learn whether other researchers see the same gap in voice-based AI for work that I do, get feedback on how to evaluate these interaction patterns rigorously, and connect with peers working on AI tools for cognitive and creative work tasks. I am also interested in perspectives on how local-first AI architectures can enable adoption in industries currently locked out of AI-assisted work.
+
+\section*{Referent}
+
+Prof.\ Jeff A.\ Bilmes, Department of Electrical Engineering, University of Washington.
+
+\end{document}
